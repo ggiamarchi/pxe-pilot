@@ -44,7 +44,7 @@ All those information are described in the YAML file `/etc/pxepilot/pxepilot.yml
 
 __Example:__
 
-```
+```yaml
 ---
 
 hosts:
@@ -184,7 +184,7 @@ Name           | In    | Type     | Required | Description
 ---------------|-------|----------|----------|-----------------------------------
 `hosts`        | body  | Host[]   | Yes      | Hosts for whom to deploy configuration
 
-__Host (object)__
+####### Host (object)
 
 Attribute      | Type     | Required | Description
 ---------------|----------|----------|---------------------------------------------
