@@ -199,3 +199,7 @@ Code   | Name          | Description
 `204`  | `No Content`  | Configurations had been deployed
 `404`  | `Not found`   | Either the configuation or a host is not found
 `400`  | `Bad request` | Malformed body
+
+# License
+
+Everything in this repository is published under the MIT license.
