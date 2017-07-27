@@ -184,7 +184,7 @@ Name           | In    | Type     | Required | Description
 ---------------|-------|----------|----------|-----------------------------------
 `hosts`        | body  | Host[]   | Yes      | Hosts for whom to deploy configuration
 
-####### Host (object)
+###### Host (object)
 
 Attribute      | Type     | Required | Description
 ---------------|----------|----------|---------------------------------------------
