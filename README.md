@@ -89,7 +89,7 @@ GET /v1/configurations
 
 ###### Response
 
-```
+```json
 {
     "configurations": [
         {
@@ -120,7 +120,7 @@ GET /v1/hosts
 
 ###### Response
 
-```
+```json
 {
     "hosts": [
         {
@@ -154,7 +154,7 @@ PUT /v1/configurations/<configuration_name>/deploy
 
 ###### Body
 
-```
+```json
 {
     "hosts": [
         {
@@ -172,7 +172,7 @@ PUT /v1/configurations/<configuration_name>/deploy
 
 ###### Error response (code 4xx)
 
-```
+```json
 {
     "message": "Configuration not found"
 }
