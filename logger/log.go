@@ -30,6 +30,13 @@ func Error(msg string, a ...interface{}) {
 	logrus.Error(fmt.Sprintf(msg, a...))
 }
 
+// Errorf logging with ERROR level and returns an error struct
+func Errorf(msg string, a ...interface{}) error {
+	err := fmt.Errorf(msg, a...)
+	logrus.Error(err.Error())
+	return err
+}
+
 // Debug logging with DEBUG level
 func Debug(msg string, a ...interface{}) {
 	logrus.Debug(fmt.Sprintf(msg, a...))
