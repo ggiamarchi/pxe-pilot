@@ -61,9 +61,8 @@ tftp:
 configuration:
   directory: /var/tftp/pxelinux.cfg/conf
 
-pxepilot:
-  server:
-    port: 3478
+server:
+  port: 3478
 ```
 
 ## Running PXE Pilot server
@@ -121,22 +120,34 @@ GET /v1/hosts
 ###### Response
 
 ```json
-{
-    "hosts": [
-        {
-            "name": "h1",
-            "mac_addresses": ["83:06:0a:00:cf:03"]
-        },
-        {
-            "name": "h2",
-            "mac_addresses": ["83:06:0a:00:cf:03", "83:06:0a:00:cf:04"]
-        },
-        {
-            "name": "h3",
-            "mac_addresses": ["83:06:0a:00:cf:03"]
+[
+    {
+        "name": "h1",
+        "macAddresses": [
+            "00:00:00:00:00:01"
+        ],
+        "configuration": null
+    },
+    {
+        "name": "h2",
+        "macAddresses": [
+            "00:00:00:00:00:02"
+        ],
+        "configuration": {
+            "name": "ubuntu-16.04"
         }
-    ]
-}
+    },
+    {
+        "name": "h3",
+        "macAddresses": [
+            "00:00:00:00:00:03",
+            "00:00:00:00:00:33"
+        ],
+        "configuration": {
+            "name": "local"
+        }
+    }
+]
 ```
 
 ###### Response codes
