@@ -1,0 +1,18 @@
+---
+
+hosts:
+  - name: h1
+    mac_addresses: ["00:00:00:00:00:01"]
+  - name: h2
+    mac_addresses: ["00:00:00:00:00:02"]
+  - name: h3
+    mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33", "00:00:00:00:01:33"]
+
+tftp:
+  root: "/Users/guillaume/Dev/pxe-pilot/test/tftp_root"
+
+configuration:
+  directory: /Users/guillaume/Dev/pxe-pilot/test/tftp_root/pxelinux.cfg/conf
+
+server:
+  port: 3478
