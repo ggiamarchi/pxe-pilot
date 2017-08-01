@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"dev.splitted-desktop.com/horizon/pxe-pilot/api"
+
 	cli "github.com/jawher/mow.cli"
 )
 
@@ -11,8 +13,11 @@ func setupCLI() {
 	app := cli.App("pxepilot", "PXE Pilot")
 
 	app.Command("server", "Run PXE Pilot server", func(cmd *cli.Cmd) {
+
+		var configFile = cmd.StringOpt("c config", "/etc/pxepilot/pxepilot.yml", "PXE Pilot YAML configuration file")
+
 		cmd.Action = func() {
-			// TODO
+			api.Run(*configFile)
 		}
 	})
 
