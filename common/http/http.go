@@ -11,8 +11,8 @@ import (
 	"dev.splitted-desktop.com/horizon/pxe-pilot/logger"
 )
 
-// HTTP do an HTTP call
-func HTTP(method string, baseURL string, path string, data interface{}, responseHolder interface{}) (int, error) {
+// Request sends an HTTP request
+func Request(method string, baseURL string, path string, data interface{}, responseHolder interface{}) (int, error) {
 
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(data)

@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"io/ioutil"
 	"os"
 
 	"fmt"
@@ -11,7 +12,11 @@ import (
 )
 
 // Init initialize the logging system
-func Init() {
+func Init(discard bool) {
+	if discard {
+		logrus.SetOutput(ioutil.Discard)
+		return
+	}
 	customFormatter := new(logrus.TextFormatter)
 	customFormatter.TimestampFormat = time.RFC3339
 	customFormatter.FullTimestamp = true
