@@ -96,8 +96,6 @@ func setupCLI() {
 						macAddresses.WriteString(h.MACAddresses[i])
 					}
 
-					os.Stdout.WriteString(macAddresses.String())
-					os.Stdout.WriteString("\n")
 					table.Append([]string{h.Name, configuration, macAddresses.String()})
 				}
 				table.Render()
