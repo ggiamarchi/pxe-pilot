@@ -1,5 +1,7 @@
 # PXE Pilot
 
+[![Build Status](https://api.travis-ci.org/ggiamarchi/pxe-pilot.png?branch=master)](https://travis-ci.org/ggiamarchi/pxe-pilot)
+
 PXE Pilot helps you to manage PXE configurations for your hosts through a simple API. His role is very simple, it allows you to:
 
 - Know which configuration is associated with each host

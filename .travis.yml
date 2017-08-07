@@ -1,0 +1,15 @@
+language: go
+
+sudo: false
+
+go:
+  - 1.6
+  - 1.7
+  - 1.8
+  - tip
+
+install:
+  - go get github.com/golang/lint/golint
+  - make dep
+
+script: make --debug
