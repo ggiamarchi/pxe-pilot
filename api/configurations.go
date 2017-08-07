@@ -27,10 +27,33 @@ func deployConfiguration(api *gin.Engine, appConfig *model.AppConfig) {
 
 		err := service.DeployConfiguration(appConfig, c.Param("name"), hosts.Hosts)
 		if err != nil {
-			// TODO Distinguish 500, 404 and 400 errors
-			c.Writer.WriteHeader(500)
+			switch v := err.(type) {
+			case *service.PXEError:
+				pxeErrorResponse(c, v)
+			default:
+				c.Writer.WriteHeader(500)
+			}
 			return
 		}
 		c.Writer.WriteHeader(200)
+	})
+}
+
+func pxeErrorResponse(c *gin.Context, err *service.PXEError) {
+	code := 500
+	switch err.Kind {
+	case "NOT_FOUND":
+		code = 404
+	case "CONFLICT":
+		code = 409
+	case "BAD_REQUEST":
+		code = 400
+	default:
+		logger.Error("%+v", err)
+	}
+	c.JSON(code, &struct {
+		Message string
+	}{
+		Message: err.Msg,
 	})
 }

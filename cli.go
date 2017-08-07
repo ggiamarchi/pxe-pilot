@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 
 	"dev.splitted-desktop.com/horizon/pxe-pilot/api"
@@ -52,16 +51,50 @@ func setupCLI() {
 		})
 		cmd.Command("deploy", "Deploy a configuration for a host", func(cmd *cli.Cmd) {
 
-			cmd.Spec = "HOST CONFIG"
+			cmd.Spec = "CONFIG HOSTNAMES..."
 
 			var (
-				host   = cmd.StringArg("HOST", "", "Host for whom to deploy a configuration")
-				config = cmd.StringArg("CONFIG", "", "Configuration to deploy")
+				config    = cmd.StringArg("CONFIG", "", "Configuration to deploy")
+				hostnames = cmd.StringsArg("HOSTNAMES", []string{}, "Hosts for whom to deploy a configuration")
 			)
 
 			cmd.Action = func() {
+
 				logger.Init(!*debug)
-				os.Stdout.WriteString(fmt.Sprintf("config deploy : not implemented\n - %s - %s", *host, *config))
+
+				hosts := make([]*model.HostQuery, len(*hostnames))
+
+				for i, h := range *hostnames {
+					hosts[i] = &model.HostQuery{
+						Name: h,
+					}
+				}
+
+				hostsQuery := &model.HostsQuery{
+					Hosts: hosts,
+				}
+
+				resp := &struct {
+					Message string
+				}{}
+
+				statusCode, err := http.Request("PUT", *serverURL, "/configurations/"+*config+"/deploy", hostsQuery, resp)
+
+				if err != nil || statusCode != 200 {
+					os.Stdout.WriteString(resp.Message + "\n")
+					cli.Exit(1)
+				}
+
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetAutoWrapText(false)
+				table.SetHeader([]string{"Name", "Configuration"})
+
+				for _, h := range *hostnames {
+					table.Append([]string{h, *config})
+				}
+
+				table.Render()
 			}
 		})
 	})
@@ -73,7 +106,8 @@ func setupCLI() {
 				var hosts = &[]*model.Host{}
 				statusCode, err := http.Request("GET", *serverURL, "/hosts", nil, hosts)
 				if err != nil || statusCode != 200 {
-					panic(err)
+					os.Stdout.WriteString("Error...")
+					cli.Exit(1)
 				}
 
 				// Print data table
