@@ -13,6 +13,8 @@ Some other software like Foreman or Cobbler can be used to manage PXE configurat
 sofisticated way. For small deployments where only very basics features are needed, installing
 such a solution can appear overkill. In this situation, PXE Pilot could be what you need.
 
+See also [the use case](USECASE.md) that leads me to create this project.
+
 # How does it work ?
 
 PXE pilot knows your hosts (with their MAC addresses) and your PXE configurations (see the
@@ -76,7 +78,7 @@ $ pxepilot server
 ## Querying PXE Pilot using the CLI
 
 ```
-pxepilot --help
+$ pxepilot --help
 
 Usage: pxepilot [OPTIONS] COMMAND [arg...]
 
