@@ -1,8 +1,8 @@
 package api
 
 import (
-	"dev.splitted-desktop.com/horizon/pxe-pilot/model"
-	"dev.splitted-desktop.com/horizon/pxe-pilot/service"
+	"github.com/ggiamarchi/pxe-pilot/model"
+	"github.com/ggiamarchi/pxe-pilot/service"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 

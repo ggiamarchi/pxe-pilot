@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"dev.splitted-desktop.com/horizon/pxe-pilot/logger"
+	"github.com/ggiamarchi/pxe-pilot/logger"
 )
 
 // Request sends an HTTP request

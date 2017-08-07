@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"os"
 
-	"dev.splitted-desktop.com/horizon/pxe-pilot/api"
-	"dev.splitted-desktop.com/horizon/pxe-pilot/common/http"
-	"dev.splitted-desktop.com/horizon/pxe-pilot/logger"
-	"dev.splitted-desktop.com/horizon/pxe-pilot/model"
+	"github.com/ggiamarchi/pxe-pilot/api"
+	"github.com/ggiamarchi/pxe-pilot/common/http"
+	"github.com/ggiamarchi/pxe-pilot/logger"
+	"github.com/ggiamarchi/pxe-pilot/model"
 
 	cli "github.com/jawher/mow.cli"
 	"github.com/olekukonko/tablewriter"

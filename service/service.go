@@ -7,9 +7,9 @@ import (
 
 	"fmt"
 
-	"dev.splitted-desktop.com/horizon/pxe-pilot/common/utils"
-	"dev.splitted-desktop.com/horizon/pxe-pilot/logger"
-	"dev.splitted-desktop.com/horizon/pxe-pilot/model"
+	"github.com/ggiamarchi/pxe-pilot/common/utils"
+	"github.com/ggiamarchi/pxe-pilot/logger"
+	"github.com/ggiamarchi/pxe-pilot/model"
 )
 
 func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {

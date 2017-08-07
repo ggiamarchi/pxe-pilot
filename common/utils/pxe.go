@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"dev.splitted-desktop.com/horizon/pxe-pilot/model"
+	"github.com/ggiamarchi/pxe-pilot/model"
 )
 
 func PXEFilenameFromMAC(mac string) string {
