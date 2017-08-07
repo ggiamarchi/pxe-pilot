@@ -53,7 +53,7 @@ hosts:
   - name: h2
     mac_addresses: ["00:00:00:00:00:02"]
   - name: h3
-    mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33"]
+    mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33", "00:00:00:00:01:33"]
 
 tftp:
   root: "/var/tftp"
@@ -75,8 +75,70 @@ $ pxepilot server
 
 ## Querying PXE Pilot using the CLI
 
-__TODO__
+```
+pxepilot --help
 
+Usage: pxepilot [OPTIONS] COMMAND [arg...]
+
+PXE Pilot
+
+Options:
+  -s, --server="http://localhost:3478"   Server URL for PXE Pilot client
+  -d, --debug=false                      Show client logs on stdout
+
+Commands:
+  server       Run PXE Pilot server
+  config       PXE configuration commands
+  host         Host commands
+
+Run 'pxepilot COMMAND --help' for more information on a command.
+```
+
+Th following examples assume PXE Pilot server is listening on `localhost:3478`. If not,
+use the `--server` option to address your PXE Pilot server.
+
+### List available configurations
+
+```
+$ pxepilot config list
+
++--------------+
+|     NAME     |
++--------------+
+| local        |
+| ubuntu-14.04 |
+| ubuntu-16.04 |
++--------------+
+```
+
+### List hosts
+
+```
+$ pxepilot host list
+
++------+---------------+-----------------------------------------------------------+
+| NAME | CONFIGURATION |                       MAC ADDRESSES                       |
++------+---------------+-----------------------------------------------------------+
+| h1   | local         | 00:00:00:00:00:01                                         |
+| h2   |               | 00:00:00:00:00:02                                         |
+| h3   | local         | 00:00:00:00:00:03 | 00:00:00:00:00:33 | 00:00:00:00:01:33 |
++------+---------------+-----------------------------------------------------------+
+```
+
+### Deploy configuration for host(s)
+
+Deploy `ubuntu-16.04` configuration for hosts `h2`and `h3`.
+
+```
+$ pxepilot config deploy ubuntu-16.04 h2 h3
+
++------+---------------+
+| NAME | CONFIGURATION |
++------+---------------+
+| h2   | ubuntu-16.04  |
+| h3   | ubuntu-16.04  |
++------+---------------+
+```
 
 # API Documentation
 
