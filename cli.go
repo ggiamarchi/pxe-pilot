@@ -15,14 +15,14 @@ import (
 
 func setupCLI() {
 
-	app := cli.App("pxepilot", "PXE Pilot")
+	app := cli.App("pxe-pilot", "PXE Pilot")
 
 	serverURL := app.StringOpt("s server", "http://localhost:3478", "Server URL for PXE Pilot client")
 	debug := app.BoolOpt("d debug", false, "Show client logs on stdout")
 
 	app.Command("server", "Run PXE Pilot server", func(cmd *cli.Cmd) {
 
-		var configFile = cmd.StringOpt("c config", "/etc/pxepilot/pxepilot.yml", "PXE Pilot YAML configuration file")
+		var configFile = cmd.StringOpt("c config", "/etc/pxe-pilot/pxe-pilot.yml", "PXE Pilot YAML configuration file")
 
 		cmd.Action = func() {
 			logger.Init(false)

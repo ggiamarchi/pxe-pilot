@@ -44,7 +44,7 @@ PXE Pilot needs to know three things:
 - The absolute path to the TFTP root
 - The directory containing PXE configurations
 
-All those information are described in the YAML file `/etc/pxepilot/pxepilot.yml`.
+All those information are described in the YAML file `/etc/pxe-pilot/pxe-pilot.yml`.
 
 __Example:__
 
@@ -74,15 +74,15 @@ server:
 Basically run
 
 ```
-$ pxepilot server
+$ pxe-pilot server
 ```
 
 ## Querying PXE Pilot using the CLI
 
 ```
-$ pxepilot --help
+$ pxe-pilot --help
 
-Usage: pxepilot [OPTIONS] COMMAND [arg...]
+Usage: pxe-pilot [OPTIONS] COMMAND [arg...]
 
 PXE Pilot
 
@@ -95,7 +95,7 @@ Commands:
   config       PXE configuration commands
   host         Host commands
 
-Run 'pxepilot COMMAND --help' for more information on a command.
+Run 'pxe-pilot COMMAND --help' for more information on a command.
 ```
 
 Th following examples assume PXE Pilot server is listening on `localhost:3478`. If not,
@@ -104,7 +104,7 @@ use the `--server` option to address your PXE Pilot server.
 ### List available configurations
 
 ```
-$ pxepilot config list
+$ pxe-pilot config list
 
 +--------------+
 |     NAME     |
@@ -118,7 +118,7 @@ $ pxepilot config list
 ### List hosts
 
 ```
-$ pxepilot host list
+$ pxe-pilot host list
 
 +------+---------------+-----------------------------------------------------------+
 | NAME | CONFIGURATION |                       MAC ADDRESSES                       |
@@ -134,7 +134,7 @@ $ pxepilot host list
 Deploy `ubuntu-16.04` configuration for hosts `h2`and `h3`.
 
 ```
-$ pxepilot config deploy ubuntu-16.04 h2 h3
+$ pxe-pilot config deploy ubuntu-16.04 h2 h3
 
 +------+---------------+
 | NAME | CONFIGURATION |
