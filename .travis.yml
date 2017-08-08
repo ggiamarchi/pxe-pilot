@@ -3,7 +3,6 @@ language: go
 sudo: false
 
 go:
-  - 1.6
   - 1.7
   - 1.8
   - tip
@@ -14,10 +13,14 @@ install:
 
 script: make --debug
 
+before_deploy:
+  - mv pxe-pilot pxe-pilot-amd64-linux
+
 deploy:
   provider: releases
   api_key:
     secure: vKtG6pTZkrRk8NV3IphFhSlOnJ5ufrrZAPjMIbL9Id3bVWqz9fHKkU8vn5Zwz88eMeFOERVflrtVX7LmucRGcNqS4M3EFJQCYoJtjiCvCmrNbYbzyNgPZ/+e3EaDTbYNDwqPJUFsTmg/FngysamHqm3c8/t6tclJyw2zXNP85V+tIRf0oXiEHg0QbAXDLrPtkq4V7+Z7TBZ11N7CMf5vjAUNuJpwRtBBONSV28TlJOuzvnxckzVVcq9+XRpFNVp0EwDtlepcuUsyYPex0ik9OcXcK5IrRTV6MEk4aDXYqe4GrsJYG3/o+CDpZ/iRwszVkF7+tP2p5m5A71P6G8E8NVyoTmEvDKtLSHj1PscUi5fHK2Hy+VnXb4OV+wrX49j2GE+iInD4zMG6GuPSd3hyV8rB9OYSbP+MiJIjPS9wDOdlf0N2kO8DkEiZIv4yRYWBG7/mFdAra8uR45dsbl/l+DTPwLXkjltfeoVuFWeYHE1Aj3JftjWlEQL5+UD5IxKSiKlm+CNabmb4AJPqe3DBs4xNp77DwNXgrdzuNuQcyNAMVTQLvUAUyWYhvbmhxa7Q1xXf0dSA7tslklegD61CcMzomnMNVmUbYE3zYS6J0fpo8cUigGXQpvvL7t1bxAKgCcen/rRJzWYuHXWvTw45akYU0fX2+DRD9PTqonNvN/Y=
-  file: pxe-pilot
+  skip_cleanup: true  
+  file: pxe-pilot-amd64-linux
   on:
     tags: true
