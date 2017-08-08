@@ -21,7 +21,7 @@ check-lint:
 check: check-fmt check-vet check-lint
 
 build: dep check
-	@go build -o pxepilot
+	@go build -o pxe-pilot
 
 clean:
-	@rm -f pxepilot
+	@rm -f pxe-pilot
