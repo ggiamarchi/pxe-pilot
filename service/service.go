@@ -107,7 +107,7 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 		hostsByName[h.Name] = h
 		hostsByPrimaryMAC[h.MACAddresses[0]] = h
 		for _, mac := range h.MACAddresses {
-			hostsByMAC[mac] = h
+			hostsByMAC[strings.ToLower(mac)] = h
 		}
 	}
 
@@ -115,6 +115,7 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 
 	// 2. Iterate over `hosts`
 	for _, qh := range hosts {
+		qh.MACAddress = strings.ToLower(qh.MACAddress)
 		logger.Info("Processing :: %+v", qh)
 
 		if qh.Configuration != "" {
