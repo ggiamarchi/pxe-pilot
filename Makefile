@@ -1,5 +1,7 @@
 .PHONY: all dep check-fmt check-vet check-lint check build clean
 
+EXECUTABLE := pxe-pilot
+
 all: build
 
 dep:
@@ -24,7 +26,7 @@ check-lint:
 check: check-fmt check-vet check-lint
 
 build: dep check
-	@go build -o pxe-pilot
+	@go build -o $(EXECUTABLE)
 
 clean:
 	@rm -f pxe-pilot
