@@ -16,9 +16,6 @@ script:
   - GOOS=linux  GOARCH=arm   make --debug EXECUTABLE=pxe-pilot-linux-arm
   - GOOS=darwin GOARCH=amd64 make --debug EXECUTABLE=pxe-pilot-darwin-amd64
 
-before_deploy:
-  - mv pxe-pilot pxe-pilot-amd64-linux
-
 deploy:
   provider: releases
   api_key:
