@@ -9,6 +9,9 @@ dep:
 	@go get gopkg.in/yaml.v2
 	@go get github.com/olekukonko/tablewriter
 
+dep-dev:
+	@go get github.com/golang/lint/golint
+
 check-fmt:
 	@! gofmt -d -e . | read
 
