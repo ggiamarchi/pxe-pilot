@@ -46,6 +46,9 @@ PXE Pilot needs to know three things:
 
 All those information are described in the YAML file `/etc/pxe-pilot/pxe-pilot.yml`.
 
+Optionnaly, IPMI MAC address (or IP address) and credentials can be specified. When IPMI is available,
+PXE Pilot client shows power state for each host.
+
 __Example:__
 
 ```yaml
@@ -56,8 +59,13 @@ hosts:
     mac_addresses: ["00:00:00:00:00:01"]
   - name: h2
     mac_addresses: ["00:00:00:00:00:02"]
+    ipmi:
+      mac_address: "00:00:00:00:00:a2"
+      username: "user"
+      password: "pass"
+      interface: "lanplus"
   - name: h3
-    mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33", "00:00:00:00:01:33"]
+    mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33"]
 
 tftp:
   root: "/var/tftp"
@@ -120,13 +128,13 @@ $ pxe-pilot config list
 ```
 $ pxe-pilot host list
 
-+------+---------------+-----------------------------------------------------------+
-| NAME | CONFIGURATION |                       MAC ADDRESSES                       |
-+------+---------------+-----------------------------------------------------------+
-| h1   | local         | 00:00:00:00:00:01                                         |
-| h2   |               | 00:00:00:00:00:02                                         |
-| h3   | local         | 00:00:00:00:00:03 | 00:00:00:00:00:33 | 00:00:00:00:01:33 |
-+------+---------------+-----------------------------------------------------------+
++------+---------------+---------------------------------------+-------------------+-----------+-------------+
+| NAME | CONFIGURATION |             MAC ADDRESSES             |    IPMI MAC       | IPMI HOST | POWER STATE |
++------+---------------+---------------------------------------+-------------------+-----------+-------------+
+| h1   | local         | 00:00:00:00:00:01                     |                   |           |             |
+| h2   |               | 00:00:00:00:00:02                     | 00:00:00:00:00:a2 | 1.2.3.4   | On          |
+| h3   | local         | 00:00:00:00:00:03 | 00:00:00:00:00:33 |                   |           |             |
++------+---------------+---------------------------------------+-------------------+-----------+-------------+
 ```
 
 ### Deploy configuration for host(s)

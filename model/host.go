@@ -5,7 +5,8 @@ import "fmt"
 type Host struct {
 	Name          string         `json:"name" yaml:"name"`
 	MACAddresses  []string       `json:"macAddresses" yaml:"mac_addresses"`
-	Configuration *Configuration `json:"configuration"`
+	Configuration *Configuration `json:"configuration" yaml:"configuration"`
+	IPMI          *IPMI          `json:"ipmi" yaml:"ipmi"`
 }
 
 func (h *Host) String() string {

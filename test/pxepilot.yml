@@ -3,6 +3,11 @@
 hosts:
   - name: h1
     mac_addresses: ["00:00:00:00:00:01"]
+    ipmi:
+      mac_address: "00:00:00:00:00:a1"
+      username: "user"
+      password: "password"
+      interface: "lanplus"
   - name: h2
     mac_addresses: ["00:00:00:00:00:02"]
   - name: h3
