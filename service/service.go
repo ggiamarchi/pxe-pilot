@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"sync"
 
 	"fmt"
 
@@ -23,6 +24,18 @@ func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {
 	return configurations
 }
 
+func RebootHost(host *model.Host) error {
+	switch status, err := ChassisPowerStatus(host.IPMI); status {
+	case "On":
+		return ChassisPowerReset(host.IPMI)
+	case "Off":
+		return ChassisPowerOn(host.IPMI)
+	case "Unknown":
+		return err
+	}
+	return logger.Errorf("Reboot host '%s' : Unknown error", host.Name)
+}
+
 func ReadHosts(appConfig *model.AppConfig) []*model.Host {
 
 	pxelinuxDir := appConfig.Tftp.Root + "/pxelinux.cfg"
@@ -36,10 +49,23 @@ func ReadHosts(appConfig *model.AppConfig) []*model.Host {
 
 	hosts := make([]*model.Host, len(appConfig.Hosts))
 
+	var wg sync.WaitGroup
+
 	for i, host := range appConfig.Hosts {
+
+		if host.IPMI != nil {
+			wg.Add(1)
+			hostlocal := host
+			go func() {
+				defer wg.Done()
+				ChassisPowerStatus(hostlocal.IPMI)
+			}()
+		}
+
 		hosts[i] = &model.Host{
 			Name:         host.Name,
 			MACAddresses: host.MACAddresses,
+			IPMI:         host.IPMI,
 		}
 		pxeFile := utils.PXEFilenameFromMAC(hosts[i].MACAddresses[0])
 		pxeFilePath := fmt.Sprintf("%s/%s", pxelinuxDir, pxeFile)
@@ -57,6 +83,8 @@ func ReadHosts(appConfig *model.AppConfig) []*model.Host {
 			Name: configFile[strings.LastIndex(configFile, "/")+1:],
 		}
 	}
+
+	wg.Wait()
 
 	return hosts
 }
@@ -96,7 +124,6 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 	if !configExists {
 		return newPXEError("NOT_FOUND", "Configuration '%s' does not exists", name)
 	}
-	//	configFile := fmt.Sprintf("%s/%s", appConfig.Configuration.Directory, name)
 
 	// Build maps in oder to optimize further searches
 	hostsByName := make(map[string]*model.Host)
@@ -113,7 +140,7 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 
 	hostsToDeploy := make(map[string]*model.Host)
 
-	// 2. Iterate over `hosts`
+	// Iterate over `hosts`
 	for _, qh := range hosts {
 		qh.MACAddress = strings.ToLower(qh.MACAddress)
 		logger.Info("Processing :: %+v", qh)

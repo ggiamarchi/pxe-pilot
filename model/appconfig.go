@@ -5,7 +5,7 @@ import (
 )
 
 type AppConfig struct {
-	Hosts []Host
+	Hosts []*Host
 	Tftp  struct {
 		Root string
 	}

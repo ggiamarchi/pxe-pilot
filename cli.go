@@ -105,6 +105,11 @@ func setupCLI() {
 				logger.Init(!*debug)
 				var hosts = &[]*model.Host{}
 				statusCode, err := http.Request("GET", *serverURL, "/hosts", nil, hosts)
+
+				if err != nil {
+					os.Stdout.WriteString("Error : " + err.Error())
+				}
+
 				if err != nil || statusCode != 200 {
 					os.Stdout.WriteString("Error...")
 					cli.Exit(1)
@@ -112,13 +117,20 @@ func setupCLI() {
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeader([]string{"Name", "Configuration", "MAC Addresses"})
+				table.SetHeader([]string{"Name", "Configuration", "MAC", "IPMI MAC", "IPMI HOST", "Power State"})
 				table.SetAutoWrapText(false)
 
 				for _, h := range *hosts {
 					var configuration string
 					if h.Configuration != nil {
 						configuration = h.Configuration.Name
+					}
+
+					var ipmi *model.IPMI
+					if h.IPMI != nil {
+						ipmi = h.IPMI
+					} else {
+						ipmi = &model.IPMI{}
 					}
 
 					var macAddresses bytes.Buffer
@@ -130,10 +142,39 @@ func setupCLI() {
 						macAddresses.WriteString(h.MACAddresses[i])
 					}
 
-					table.Append([]string{h.Name, configuration, macAddresses.String()})
+					table.Append([]string{h.Name, configuration, macAddresses.String(), ipmi.MACAddress, ipmi.Hostname, ipmi.Status})
 				}
 				table.Render()
 			}
+		})
+		cmd.Command("reboot", "(re)boot a host", func(cmd *cli.Cmd) {
+			cmd.Spec = "HOSTNAME"
+
+			var (
+				hostname = cmd.StringArg("HOSTNAME", "", "Host to reboot or reboot if powered off")
+			)
+
+			cmd.Action = func() {
+
+				logger.Init(!*debug)
+
+				statusCode, err := http.Request("PATCH", *serverURL, "/hosts/"+*hostname+"/reboot", nil, nil)
+
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetAutoWrapText(false)
+				table.SetHeader([]string{"Name", "Reboot"})
+
+				if err != nil || statusCode != 204 {
+					table.Append([]string{*hostname, "ERROR"})
+					table.Render()
+					cli.Exit(1)
+				} else {
+					table.Append([]string{*hostname, "OK"})
+					table.Render()
+				}
+			}
+
 		})
 	})
 

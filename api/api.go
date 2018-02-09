@@ -3,6 +3,8 @@ package api
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
+	"time"
 
 	"github.com/ggiamarchi/pxe-pilot/logger"
 	"github.com/ggiamarchi/pxe-pilot/model"
@@ -14,7 +16,14 @@ import (
 func Run(appConfigFile string) {
 	logger.Info("Starting PXE Pilot server...")
 	appConfig := loadAppConfig(appConfigFile)
-	api(appConfig).Run(fmt.Sprintf(":%d", appConfig.Server.Port))
+
+	s := &http.Server{
+		Addr:         fmt.Sprintf(":%d", appConfig.Server.Port),
+		Handler:      api(appConfig),
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+	s.ListenAndServe()
 }
 
 func loadAppConfig(file string) *model.AppConfig {
@@ -44,6 +53,7 @@ func api(appConfig *model.AppConfig) *gin.Engine {
 	deployConfiguration(api, appConfig)
 
 	readHosts(api, appConfig)
+	rebootHost(api, appConfig)
 
 	return api
 }

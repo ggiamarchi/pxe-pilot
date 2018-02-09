@@ -31,14 +31,14 @@ func Request(method string, baseURL string, path string, data interface{}, respo
 
 	var transport = &http.Transport{
 		Dial: (&net.Dialer{
-			Timeout: 5 * time.Second,
+			Timeout: 10 * time.Second,
 		}).Dial,
-		TLSHandshakeTimeout: 5 * time.Second,
+		TLSHandshakeTimeout: 10 * time.Second,
 	}
 
 	client := http.Client{
 		Transport: transport,
-		Timeout:   time.Duration(5 * time.Second),
+		Timeout:   time.Duration(10 * time.Second),
 	}
 
 	resp, err := client.Do(req)
