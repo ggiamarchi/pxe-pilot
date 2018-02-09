@@ -24,6 +24,18 @@ func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {
 	return configurations
 }
 
+func RebootHost(host *model.Host) error {
+	switch status, err := ChassisPowerStatus(host.IPMI); status {
+	case "On":
+		return ChassisPowerReset(host.IPMI)
+	case "Off":
+		return ChassisPowerOn(host.IPMI)
+	case "Unknown":
+		return err
+	}
+	return logger.Errorf("Reboot host '%s' : Unknown error", host.Name)
+}
+
 func ReadHosts(appConfig *model.AppConfig) []*model.Host {
 
 	pxelinuxDir := appConfig.Tftp.Root + "/pxelinux.cfg"

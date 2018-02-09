@@ -105,6 +105,11 @@ func setupCLI() {
 				logger.Init(!*debug)
 				var hosts = &[]*model.Host{}
 				statusCode, err := http.Request("GET", *serverURL, "/hosts", nil, hosts)
+
+				if err != nil {
+					os.Stdout.WriteString("Error : " + err.Error())
+				}
+
 				if err != nil || statusCode != 200 {
 					os.Stdout.WriteString("Error...")
 					cli.Exit(1)
@@ -141,6 +146,35 @@ func setupCLI() {
 				}
 				table.Render()
 			}
+		})
+		cmd.Command("reboot", "(re)boot a host", func(cmd *cli.Cmd) {
+			cmd.Spec = "HOSTNAME"
+
+			var (
+				hostname = cmd.StringArg("HOSTNAME", "", "Host to reboot or reboot if powered off")
+			)
+
+			cmd.Action = func() {
+
+				logger.Init(!*debug)
+
+				statusCode, err := http.Request("PATCH", *serverURL, "/hosts/"+*hostname+"/reboot", nil, nil)
+
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetAutoWrapText(false)
+				table.SetHeader([]string{"Name", "Reboot"})
+
+				if err != nil || statusCode != 204 {
+					table.Append([]string{*hostname, "ERROR"})
+					table.Render()
+					cli.Exit(1)
+				} else {
+					table.Append([]string{*hostname, "OK"})
+					table.Render()
+				}
+			}
+
 		})
 	})
 
