@@ -36,7 +36,7 @@ func RebootHost(host *model.Host) error {
 	return logger.Errorf("Reboot host '%s' : Unknown error", host.Name)
 }
 
-func ReadHosts(appConfig *model.AppConfig) []*model.Host {
+func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 
 	pxelinuxDir := appConfig.Tftp.Root + "/pxelinux.cfg"
 
@@ -53,13 +53,15 @@ func ReadHosts(appConfig *model.AppConfig) []*model.Host {
 
 	for i, host := range appConfig.Hosts {
 
-		if host.IPMI != nil {
-			wg.Add(1)
-			hostlocal := host
-			go func() {
-				defer wg.Done()
-				ChassisPowerStatus(hostlocal.IPMI)
-			}()
+		if status {
+			if host.IPMI != nil {
+				wg.Add(1)
+				hostlocal := host
+				go func() {
+					defer wg.Done()
+					ChassisPowerStatus(hostlocal.IPMI)
+				}()
+			}
 		}
 
 		hosts[i] = &model.Host{
@@ -130,7 +132,7 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 	hostsByPrimaryMAC := make(map[string]*model.Host)
 	hostsByMAC := make(map[string]*model.Host)
 
-	for _, h := range ReadHosts(appConfig) {
+	for _, h := range ReadHosts(appConfig, false) {
 		hostsByName[h.Name] = h
 		hostsByPrimaryMAC[h.MACAddresses[0]] = h
 		for _, mac := range h.MACAddresses {

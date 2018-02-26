@@ -8,7 +8,7 @@ import (
 
 func readHosts(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.GET("/hosts", func(c *gin.Context) {
-		hosts := service.ReadHosts(appConfig)
+		hosts := service.ReadHosts(appConfig, true)
 		c.JSON(200, hosts)
 	})
 }
