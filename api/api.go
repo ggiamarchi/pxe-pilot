@@ -47,13 +47,17 @@ func api(appConfig *model.AppConfig) *gin.Engine {
 	api := gin.New()
 	api.Use(logger.APILogger(), gin.Recovery())
 
-	healthcheck(api, appConfig)
+	v1 := api.Group("/v1")
 
-	readConfigurations(api, appConfig)
-	deployConfiguration(api, appConfig)
+	healthcheck(v1, appConfig)
 
-	readHosts(api, appConfig)
-	rebootHost(api, appConfig)
+	readConfigurations(v1, appConfig)
+	deployConfiguration(v1, appConfig)
+
+	readHosts(v1, appConfig)
+	rebootHost(v1, appConfig)
+
+	discovery(v1, appConfig)
 
 	return api
 }

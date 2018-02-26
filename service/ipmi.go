@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"os/exec"
 	"strings"
 
 	"github.com/ggiamarchi/pxe-pilot/model"
@@ -44,34 +43,10 @@ func ChassisPowerOff(context *model.IPMI) error {
 	return err
 }
 
-func execCommand(command string, args ...interface{}) (string, string, error) {
-
-	fmtCommand := fmt.Sprintf(command, args...)
-
-	splitCommand := strings.Split(fmtCommand, " ")
-
-	logger.Info("Executing command :: %s :: with args :: %v => %s", command, args, fmtCommand)
-
-	cmdName := splitCommand[0]
-	cmdArgs := splitCommand[1:len(splitCommand)]
-
-	cmd := exec.Command(cmdName, cmdArgs...)
-
-	var stdout bytes.Buffer
-	cmd.Stdout = &stdout
-
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
-
-	return stdout.String(), stderr.String(), err
-}
-
 // getIPFromMAC reads the ARP table to find the IP address matching the given MAC address
 func getIPFromMAC(mac string) (string, error) {
 
-	stdout, _, err := execCommand("sudo arp -an")
+	stdout, _, err := ExecCommand("sudo arp -an")
 
 	if err != nil {
 		return "", err
@@ -145,7 +120,7 @@ func ipmitool(context *model.IPMI, command string) (*string, *string, error) {
 	baseCmd := fmt.Sprintf("ipmitool%s -N 1 -R 2 -H %s -U %s -P %s ", interfaceOpt, context.Hostname, context.Username, context.Password)
 
 	fullCommand := baseCmd + command
-	stdout, stderr, err := execCommand(fullCommand)
+	stdout, stderr, err := ExecCommand(fullCommand)
 
 	if err != nil {
 		logger.Error("IPMI command failed <%s> - %s", fullCommand, err)

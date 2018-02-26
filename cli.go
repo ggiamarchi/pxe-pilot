@@ -35,7 +35,7 @@ func setupCLI() {
 			cmd.Action = func() {
 				logger.Init(!*debug)
 				var configurations = &[]*model.Configuration{}
-				statusCode, err := http.Request("GET", *serverURL, "/configurations", nil, configurations)
+				statusCode, err := http.Request("GET", *serverURL, "/v1/configurations", nil, configurations)
 				if err != nil || statusCode != 200 {
 					panic(err)
 				}
@@ -78,7 +78,7 @@ func setupCLI() {
 					Message string
 				}{}
 
-				statusCode, err := http.Request("PUT", *serverURL, "/configurations/"+*config+"/deploy", hostsQuery, resp)
+				statusCode, err := http.Request("PUT", *serverURL, "/v1/configurations/"+*config+"/deploy", hostsQuery, resp)
 
 				if err != nil || statusCode != 200 {
 					os.Stdout.WriteString(resp.Message + "\n")
@@ -104,7 +104,7 @@ func setupCLI() {
 			cmd.Action = func() {
 				logger.Init(!*debug)
 				var hosts = &[]*model.Host{}
-				statusCode, err := http.Request("GET", *serverURL, "/hosts", nil, hosts)
+				statusCode, err := http.Request("GET", *serverURL, "/v1/hosts", nil, hosts)
 
 				if err != nil {
 					os.Stdout.WriteString("Error : " + err.Error())
@@ -158,7 +158,7 @@ func setupCLI() {
 
 				logger.Init(!*debug)
 
-				statusCode, err := http.Request("PATCH", *serverURL, "/hosts/"+*hostname+"/reboot", nil, nil)
+				statusCode, err := http.Request("PATCH", *serverURL, "/v1/hosts/"+*hostname+"/reboot", nil, nil)
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
@@ -174,7 +174,26 @@ func setupCLI() {
 					table.Render()
 				}
 			}
+		})
+		cmd.Command("discovery", "Discover hosts over subnets", func(cmd *cli.Cmd) {
+			cmd.Action = func() {
+				logger.Init(!*debug)
+				statusCode, err := http.Request("PATCH", *serverURL, "/v1/discovery", nil, nil)
 
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeader([]string{"Discovery"})
+				table.SetAutoWrapText(false)
+				if err != nil {
+					table.Append([]string{"ERROR : " + err.Error()})
+				}
+				if err != nil || statusCode != 204 {
+					table.Append([]string{"ERROR"})
+					cli.Exit(1)
+				}
+				table.Append([]string{"OK"})
+				table.Render()
+			}
 		})
 	})
 
