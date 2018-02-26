@@ -231,6 +231,21 @@ Code   | Name          | Description
 `20O`  | `Ok`          | Host list had been retrieved
 
 
+## Reboot a host
+
+```
+PATCH /v1/hosts/<name>/reboot
+```
+
+###### Response codes
+
+Code   | Name          | Description
+-------|---------------|---------------------------------------------------
+`204`  | `No Content`  | Host had been successfully rebooted
+`404`  | `Not Found`   | Host does not exist
+`409`  | `Conflict`    | Reboot did not succeed for any reason
+
+
 ## Deploy a configuration for host(s)
 
 ```
