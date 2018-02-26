@@ -6,14 +6,14 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func readHosts(api *gin.Engine, appConfig *model.AppConfig) {
+func readHosts(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.GET("/hosts", func(c *gin.Context) {
 		hosts := service.ReadHosts(appConfig)
 		c.JSON(200, hosts)
 	})
 }
 
-func rebootHost(api *gin.Engine, appConfig *model.AppConfig) {
+func rebootHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.PATCH("/hosts/:name/reboot", func(c *gin.Context) {
 		for _, host := range appConfig.Hosts {
 			if host.Name == c.Param("name") {

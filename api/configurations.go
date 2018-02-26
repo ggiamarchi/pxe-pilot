@@ -7,14 +7,14 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func readConfigurations(api *gin.Engine, appConfig *model.AppConfig) {
+func readConfigurations(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.GET("/configurations", func(c *gin.Context) {
 		configurations := service.ReadConfigurations(appConfig)
 		c.JSON(200, configurations)
 	})
 }
 
-func deployConfiguration(api *gin.Engine, appConfig *model.AppConfig) {
+func deployConfiguration(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.PUT("/configurations/:name/deploy", func(c *gin.Context) {
 
 		var hosts model.HostsQuery

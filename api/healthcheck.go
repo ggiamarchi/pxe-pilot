@@ -5,7 +5,7 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func healthcheck(api *gin.Engine, appConfig *model.AppConfig) {
+func healthcheck(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.GET("/healthcheck", func(c *gin.Context) {
 		c.Writer.WriteHeader(204)
 	})
