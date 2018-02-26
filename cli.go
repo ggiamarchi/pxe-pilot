@@ -174,7 +174,26 @@ func setupCLI() {
 					table.Render()
 				}
 			}
+		})
+		cmd.Command("discovery", "Discover hosts over subnets", func(cmd *cli.Cmd) {
+			cmd.Action = func() {
+				logger.Init(!*debug)
+				statusCode, err := http.Request("PATCH", *serverURL, "/v1/discovery", nil, nil)
 
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeader([]string{"Discovery"})
+				table.SetAutoWrapText(false)
+				if err != nil {
+					table.Append([]string{"ERROR : " + err.Error()})
+				}
+				if err != nil || statusCode != 204 {
+					table.Append([]string{"ERROR"})
+					cli.Exit(1)
+				}
+				table.Append([]string{"OK"})
+				table.Render()
+			}
 		})
 	})
 

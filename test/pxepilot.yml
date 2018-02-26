@@ -5,6 +5,7 @@ hosts:
     mac_addresses: ["00:00:00:00:00:01"]
     ipmi:
       mac_address: "00:00:00:00:00:a1"
+      subnet: 10.0.0.0/24
       username: "user"
       password: "password"
       interface: "lanplus"

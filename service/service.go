@@ -13,6 +13,20 @@ import (
 	"github.com/ggiamarchi/pxe-pilot/model"
 )
 
+func Discovery(subnets []string) error {
+	logger.Info("Discovery on subnets %+v", subnets)
+	var wg sync.WaitGroup
+	for _, cidr := range subnets {
+		wg.Add(1)
+		go func(cidr string) {
+			defer wg.Done()
+			ExecCommand("fping -c 1 -D -q -g %s", cidr)
+		}(cidr)
+	}
+	wg.Wait()
+	return nil
+}
+
 func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {
 	files, _ := ioutil.ReadDir(appConfig.Configuration.Directory)
 	configurations := make([]*model.Configuration, len(files))

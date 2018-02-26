@@ -57,5 +57,7 @@ func api(appConfig *model.AppConfig) *gin.Engine {
 	readHosts(v1, appConfig)
 	rebootHost(v1, appConfig)
 
+	discovery(v1, appConfig)
+
 	return api
 }

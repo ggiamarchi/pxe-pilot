@@ -64,6 +64,7 @@ hosts:
       username: "user"
       password: "pass"
       interface: "lanplus"
+      subnets: "10.0.0.0/24"
   - name: h3
     mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33"]
 
@@ -299,6 +300,22 @@ Code   | Name          | Description
 `204`  | `No Content`  | Configurations had been deployed
 `404`  | `Not found`   | Either the configuation or a host is not found
 `400`  | `Bad request` | Malformed body
+
+
+## Discover hosts over the network
+
+This API populate the ARP table for all subnets in the PXE Pilot configuration
+
+```
+PATCH /v1/discovery
+```
+
+###### Response codes
+
+Code   | Name          | Description
+-------|---------------|---------------------------------------------------
+`204`  | `No Content`  | Discovery operation completed without any issue
+
 
 # License
 
