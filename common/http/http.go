@@ -42,7 +42,7 @@ func Request(method string, baseURL string, path string, data interface{}, respo
 
 	client := http.Client{
 		Transport: transport,
-		Timeout:   time.Duration(10 * time.Second),
+		Timeout:   time.Duration(30 * time.Second),
 	}
 
 	resp, err := client.Do(req)

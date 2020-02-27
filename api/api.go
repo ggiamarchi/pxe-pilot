@@ -21,7 +21,7 @@ func Run(appConfigFile string) {
 		Addr:         fmt.Sprintf(":%d", appConfig.Server.Port),
 		Handler:      api(appConfig),
 		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		WriteTimeout: 30 * time.Second,
 	}
 	err := s.ListenAndServe()
 	if err != nil {
