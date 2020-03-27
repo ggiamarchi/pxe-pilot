@@ -8,7 +8,7 @@ import (
 
 	"github.com/ggiamarchi/pxe-pilot/logger"
 	"github.com/ggiamarchi/pxe-pilot/model"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 	yaml "gopkg.in/yaml.v2"
 )
 

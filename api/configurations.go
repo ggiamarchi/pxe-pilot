@@ -4,7 +4,7 @@ import (
 	"github.com/ggiamarchi/pxe-pilot/logger"
 	"github.com/ggiamarchi/pxe-pilot/model"
 	"github.com/ggiamarchi/pxe-pilot/service"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 func readConfigurations(api *gin.RouterGroup, appConfig *model.AppConfig) {
