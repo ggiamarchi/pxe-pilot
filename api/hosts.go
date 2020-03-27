@@ -32,19 +32,7 @@ func rebootHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
 func discovery(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.PATCH("/discovery", func(c *gin.Context) {
 
-		hosts := service.ReadHosts(appConfig, false)
-
-		m := make(map[string]struct{})
-
-		for _, h := range hosts {
-			m[h.IPMI.Subnet] = struct{}{}
-		}
-		subnets := make([]string, 0, len(m))
-		for cidr := range m {
-			subnets = append(subnets, cidr)
-		}
-
-		if service.Discovery(subnets) != nil {
+		if service.Discovery(appConfig) != nil {
 			c.Writer.WriteHeader(500)
 		}
 
