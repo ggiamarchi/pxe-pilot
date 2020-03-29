@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/ggiamarchi/pxe-pilot/model"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 func healthcheck(api *gin.RouterGroup, appConfig *model.AppConfig) {

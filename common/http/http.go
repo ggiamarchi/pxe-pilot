@@ -15,7 +15,11 @@ import (
 func Request(method string, baseURL string, path string, data interface{}, responseHolder interface{}) (int, error) {
 
 	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(data)
+	err := json.NewEncoder(b).Encode(data)
+	if err != nil {
+		logger.Error("%s", err)
+		return 500, err
+	}
 
 	url := fmt.Sprintf("%s%s", baseURL, path)
 
@@ -48,7 +52,11 @@ func Request(method string, baseURL string, path string, data interface{}, respo
 	defer resp.Body.Close()
 
 	if responseHolder != nil {
-		json.NewDecoder(resp.Body).Decode(responseHolder)
+		err := json.NewDecoder(resp.Body).Decode(responseHolder)
+		if err != nil {
+			logger.Error("%s", err)
+			return 500, err
+		}
 	}
 
 	logger.Info(" -> Response code %d", resp.StatusCode)

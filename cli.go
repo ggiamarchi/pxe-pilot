@@ -197,5 +197,8 @@ func setupCLI() {
 		})
 	})
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		logger.Error("%s", err)
+	}
 }

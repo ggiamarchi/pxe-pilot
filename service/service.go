@@ -20,7 +20,10 @@ func Discovery(subnets []string) error {
 		wg.Add(1)
 		go func(cidr string) {
 			defer wg.Done()
-			ExecCommand("fping -c 1 -D -q -g %s", cidr)
+			_, _, err := ExecCommand("fping -c 1 -D -q -g %s", cidr)
+			if err != nil {
+				logger.Error("%s", err)
+			}
 		}(cidr)
 	}
 	wg.Wait()
@@ -73,7 +76,14 @@ func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 				hostlocal := host
 				go func() {
 					defer wg.Done()
-					ChassisPowerStatus(hostlocal.IPMI)
+					_, err := ChassisPowerStatus(hostlocal.IPMI)
+					if err != nil {
+						// Retry once
+						_, err = ChassisPowerStatus(hostlocal.IPMI)
+						if err != nil {
+							logger.Error("Unable to find IPMI Status for %+v", hostlocal)
+						}
+					}
 				}()
 			}
 		}
@@ -240,13 +250,4 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 	}
 
 	return nil
-}
-
-func configDeployedForHost(a string, host *model.Host) bool {
-	for _, b := range host.MACAddresses {
-		if b == a {
-			return true
-		}
-	}
-	return false
 }

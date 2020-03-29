@@ -2,13 +2,9 @@ language: go
 
 sudo: false
 
-go:
-  - 1.7
-  - 1.8
-  - tip
+go: 1.14
 
 install:
-  - make dep
   - make dep-dev
 
 script:

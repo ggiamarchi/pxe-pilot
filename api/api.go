@@ -8,7 +8,7 @@ import (
 
 	"github.com/ggiamarchi/pxe-pilot/logger"
 	"github.com/ggiamarchi/pxe-pilot/model"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -23,7 +23,10 @@ func Run(appConfigFile string) {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	s.ListenAndServe()
+	err := s.ListenAndServe()
+	if err != nil {
+		logger.Error("%s", err)
+	}
 }
 
 func loadAppConfig(file string) *model.AppConfig {

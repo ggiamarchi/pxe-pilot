@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Sirupsen/logrus"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // Init initialize the logging system
