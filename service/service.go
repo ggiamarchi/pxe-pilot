@@ -154,6 +154,35 @@ func newPXEError(kind, msg string, a ...interface{}) *PXEError {
 	return &err
 }
 
+func ReadConfigurationContent(appConfig *model.AppConfig, name string) (*model.ConfigurationDetails, error) {
+	logger.Info("Show configuration :: %s", name)
+
+	configExists := false
+	for _, c := range ReadConfigurations(appConfig) {
+		if name == c.Name {
+			configExists = true
+			break
+		}
+	}
+	if !configExists {
+		return nil, newPXEError("NOT_FOUND", "Configuration '%s' does not exists", name)
+	}
+
+	file := fmt.Sprintf("%s/%s", appConfig.Configuration.Directory, name)
+
+	f, err := ioutil.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+
+	c := &model.ConfigurationDetails{
+		Name:    name,
+		Content: string(f),
+	}
+
+	return c, nil
+}
+
 func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model.HostQuery) error {
 	logger.Info("Deploy configuration :: %s :: %+v", name, hosts)
 

@@ -14,6 +14,25 @@ func readConfigurations(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	})
 }
 
+func showConfiguration(api *gin.RouterGroup, appConfig *model.AppConfig) {
+	api.GET("/configurations/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		config, err := service.ReadConfigurationContent(appConfig, name)
+
+		if err != nil {
+			switch v := err.(type) {
+			case *service.PXEError:
+				pxeErrorResponse(c, v)
+			default:
+				c.Writer.WriteHeader(500)
+			}
+			return
+		}
+
+		c.JSON(200, config)
+	})
+}
+
 func deployConfiguration(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.PUT("/configurations/:name/deploy", func(c *gin.Context) {
 

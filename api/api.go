@@ -55,6 +55,7 @@ func api(appConfig *model.AppConfig) *gin.Engine {
 	healthcheck(v1, appConfig)
 
 	readConfigurations(v1, appConfig)
+	showConfiguration(v1, appConfig)
 	deployConfiguration(v1, appConfig)
 
 	readHosts(v1, appConfig)

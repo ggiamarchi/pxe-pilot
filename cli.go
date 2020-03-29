@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 
 	"github.com/ggiamarchi/pxe-pilot/api"
@@ -31,6 +32,32 @@ func setupCLI() {
 	})
 
 	app.Command("config", "PXE configuration commands", func(cmd *cli.Cmd) {
+		cmd.Command("show", "Show PXE configurations", func(cmd *cli.Cmd) {
+
+			cmd.Spec = "NAME"
+
+			var (
+				name = cmd.StringArg("NAME", "", "Configuration to show")
+			)
+
+			cmd.Action = func() {
+				logger.Init(!*debug)
+
+				var configuration = &model.ConfigurationDetails{}
+				statusCode, err := http.Request("GET", *serverURL, fmt.Sprintf("/v1/configurations/%s", *name), nil, configuration)
+				if err != nil || statusCode != 200 {
+					panic(err)
+				}
+
+				fmt.Println(configuration.Content)
+				// Print data table
+				// table := tablewriter.NewWriter(os.Stdout)
+				// table.SetAutoWrapText(false)
+				// table.SetHeader([]string{"Name", "Content"})
+				// table.Append([]string{configuration.Name, configuration.Content})
+				// table.Render()
+			}
+		})
 		cmd.Command("list", "List available PXE configurations", func(cmd *cli.Cmd) {
 			cmd.Action = func() {
 				logger.Init(!*debug)
