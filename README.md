@@ -302,19 +302,19 @@ Code   | Name          | Description
 `400`  | `Bad request` | Malformed body
 
 
-## Discover hosts over the network
+## Refresh hosts information
 
 This API populate the ARP table for all subnets in the PXE Pilot configuration
 
 ```
-PATCH /v1/discovery
+PATCH /v1/refresh
 ```
 
 ###### Response codes
 
 Code   | Name          | Description
 -------|---------------|---------------------------------------------------
-`204`  | `No Content`  | Discovery operation completed without any issue
+`204`  | `No Content`  | Refresh operation completed without any issue
 
 
 # License

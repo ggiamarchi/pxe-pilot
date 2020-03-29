@@ -29,10 +29,10 @@ func rebootHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	})
 }
 
-func discovery(api *gin.RouterGroup, appConfig *model.AppConfig) {
-	api.PATCH("/discovery", func(c *gin.Context) {
+func refresh(api *gin.RouterGroup, appConfig *model.AppConfig) {
+	api.PATCH("/refresh", func(c *gin.Context) {
 
-		if service.Discovery(appConfig) != nil {
+		if service.Refresh(appConfig) != nil {
 			c.Writer.WriteHeader(500)
 		}
 
