@@ -50,12 +50,6 @@ func setupCLI() {
 				}
 
 				fmt.Println(configuration.Content)
-				// Print data table
-				// table := tablewriter.NewWriter(os.Stdout)
-				// table.SetAutoWrapText(false)
-				// table.SetHeader([]string{"Name", "Content"})
-				// table.Append([]string{configuration.Name, configuration.Content})
-				// table.Render()
 			}
 		})
 		cmd.Command("list", "List available PXE configurations", func(cmd *cli.Cmd) {
