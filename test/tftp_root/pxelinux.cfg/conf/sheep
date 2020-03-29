@@ -1,0 +1,5 @@
+DEFAULT sheeplive
+
+label sheeplive
+    kernel /sheep-live/vmlinuz
+    append boot=live fetch=http://1.2.3.4/sheep-live.squashfs initrd=/sheep-live/initrd.img ssh=sheep console=ttyS1,57600n8 sheep.script=http://1.2.3.4/sheep sheep.config=http://1.2.3.4/config.yml
