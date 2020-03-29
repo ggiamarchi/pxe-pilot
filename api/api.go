@@ -23,7 +23,10 @@ func Run(appConfigFile string) {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	s.ListenAndServe()
+	err := s.ListenAndServe()
+	if err != nil {
+		logger.Error("%s", err)
+	}
 }
 
 func loadAppConfig(file string) *model.AppConfig {

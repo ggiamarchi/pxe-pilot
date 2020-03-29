@@ -18,7 +18,7 @@ func ExecCommand(command string, args ...interface{}) (string, string, error) {
 	logger.Info("Executing command :: %s :: with args :: %v => %s", command, args, fmtCommand)
 
 	cmdName := splitCommand[0]
-	cmdArgs := splitCommand[1:len(splitCommand)]
+	cmdArgs := splitCommand[1:]
 
 	cmd := exec.Command(cmdName, cmdArgs...)
 
