@@ -13,7 +13,7 @@ import (
 	"github.com/ggiamarchi/pxe-pilot/model"
 )
 
-func Discovery(appConfig *model.AppConfig) error {
+func Refresh(appConfig *model.AppConfig) error {
 
 	hosts := ReadHosts(appConfig, false)
 

@@ -175,14 +175,14 @@ func setupCLI() {
 				}
 			}
 		})
-		cmd.Command("discovery", "Discover hosts over subnets", func(cmd *cli.Cmd) {
+		cmd.Command("refresh", "Refresh hosts information", func(cmd *cli.Cmd) {
 			cmd.Action = func() {
 				logger.Init(!*debug)
-				statusCode, err := http.Request("PATCH", *serverURL, "/v1/discovery", nil, nil)
+				statusCode, err := http.Request("PATCH", *serverURL, "/v1/refresh", nil, nil)
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeader([]string{"Discovery"})
+				table.SetHeader([]string{"Refresh"})
 				table.SetAutoWrapText(false)
 				if err != nil {
 					table.Append([]string{"ERROR : " + err.Error()})
