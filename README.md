@@ -185,6 +185,26 @@ Code   | Name        | Description
 -------|-------------|---------------------------------------------------
 `20O`  | `Ok`        | Server configurations have been retrieved
 
+## Show configurations
+
+```
+GET /v1/configurations/<name>
+```
+
+###### Response
+
+```json
+{
+  "name": "local",
+  "content": "default local\n\nlabel local\n    localboot 0\n"
+}
+```
+
+###### Response codes
+
+Code   | Name        | Description
+-------|-------------|---------------------------------------------------
+`20O`  | `Ok`        | Configuration detail have been retrieved
 
 ## Read hosts
 
