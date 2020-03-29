@@ -13,8 +13,24 @@ import (
 	"github.com/ggiamarchi/pxe-pilot/model"
 )
 
-func Discovery(subnets []string) error {
+func Discovery(appConfig *model.AppConfig) error {
+
+	hosts := ReadHosts(appConfig, false)
+
+	m := make(map[string]struct{})
+
+	for _, h := range hosts {
+		m[h.IPMI.Subnet] = struct{}{}
+		// Remove IPMI IP to ensure it is refreshed on next IPMI call
+		h.IPMI.Hostname = ""
+	}
+	subnets := make([]string, 0, len(m))
+	for cidr := range m {
+		subnets = append(subnets, cidr)
+	}
+
 	logger.Info("Discovery on subnets %+v", subnets)
+
 	var wg sync.WaitGroup
 	for _, cidr := range subnets {
 		wg.Add(1)
@@ -26,6 +42,7 @@ func Discovery(subnets []string) error {
 			}
 		}(cidr)
 	}
+
 	wg.Wait()
 	return nil
 }
