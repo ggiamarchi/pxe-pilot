@@ -44,7 +44,7 @@ func deployConfiguration(api *gin.RouterGroup, appConfig *model.AppConfig) {
 			return
 		}
 
-		err := service.DeployConfiguration(appConfig, c.Param("name"), hosts.Hosts)
+		resp, err := service.DeployConfiguration(appConfig, c.Param("name"), hosts.Hosts)
 		if err != nil {
 			switch v := err.(type) {
 			case *service.PXEError:
@@ -54,7 +54,7 @@ func deployConfiguration(api *gin.RouterGroup, appConfig *model.AppConfig) {
 			}
 			return
 		}
-		c.Writer.WriteHeader(200)
+		c.JSON(200, resp)
 	})
 }
 

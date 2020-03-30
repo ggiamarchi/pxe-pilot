@@ -50,12 +50,6 @@ func setupCLI() {
 				}
 
 				fmt.Println(configuration.Content)
-				// Print data table
-				// table := tablewriter.NewWriter(os.Stdout)
-				// table.SetAutoWrapText(false)
-				// table.SetHeader([]string{"Name", "Content"})
-				// table.Append([]string{configuration.Name, configuration.Content})
-				// table.Render()
 			}
 		})
 		cmd.Command("list", "List available PXE configurations", func(cmd *cli.Cmd) {
@@ -78,9 +72,11 @@ func setupCLI() {
 		})
 		cmd.Command("deploy", "Deploy a configuration for a host", func(cmd *cli.Cmd) {
 
-			cmd.Spec = "CONFIG HOSTNAMES..."
+			cmd.Spec = "[-n] CONFIG HOSTNAMES..."
 
 			var (
+				now = cmd.BoolOpt("n now", false, "Trigger a server reboot when the configuration is set")
+
 				config    = cmd.StringArg("CONFIG", "", "Configuration to deploy")
 				hostnames = cmd.StringsArg("HOSTNAMES", []string{}, "Hosts for whom to deploy a configuration")
 			)
@@ -93,7 +89,8 @@ func setupCLI() {
 
 				for i, h := range *hostnames {
 					hosts[i] = &model.HostQuery{
-						Name: h,
+						Name:   h,
+						Reboot: *now,
 					}
 				}
 
@@ -101,24 +98,22 @@ func setupCLI() {
 					Hosts: hosts,
 				}
 
-				resp := &struct {
-					Message string
-				}{}
+				resp := &model.HostsResponse{}
 
 				statusCode, err := http.Request("PUT", *serverURL, "/v1/configurations/"+*config+"/deploy", hostsQuery, resp)
 
 				if err != nil || statusCode != 200 {
-					os.Stdout.WriteString(resp.Message + "\n")
 					cli.Exit(1)
 				}
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetAutoWrapText(false)
-				table.SetHeader([]string{"Name", "Configuration"})
+				table.SetHeader([]string{"Name", "Configuration", "Rebooted"})
 
-				for _, h := range *hostnames {
-					table.Append([]string{h, *config})
+				for _, h := range resp.Hosts {
+					table.Append([]string{h.Name, *config, h.Rebooted})
+					fmt.Println(5)
 				}
 
 				table.Render()
