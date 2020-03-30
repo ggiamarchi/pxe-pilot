@@ -311,6 +311,7 @@ Attribute      | Type     | Required | Description
 ---------------|----------|----------|---------------------------------------------
 `name`         | string   | No       | Host name
 `mac_address`  | string   | No       | Host MAC address
+`reboot`       | bool     | No       | Whether the host should be rebooted automatically or not
 
 
 ###### Response codes

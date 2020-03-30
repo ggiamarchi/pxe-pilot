@@ -17,6 +17,7 @@ type HostQuery struct {
 	Name          string `json:"name"`
 	MACAddress    string `json:"macAddress"`
 	Configuration string `json:"configuration"`
+	Reboot        bool   `json:"reboot"`
 }
 
 func (h *HostQuery) String() string {
@@ -28,5 +29,23 @@ type HostsQuery struct {
 }
 
 func (h *HostsQuery) String() string {
+	return fmt.Sprintf("%+v", *h)
+}
+
+type HostResponse struct {
+	Name          string `json:"name"`
+	Configuration string `json:"configuration"`
+	Rebooted      string `json:"rebooted"`
+}
+
+func (h *HostResponse) String() string {
+	return fmt.Sprintf("%+v", *h)
+}
+
+type HostsResponse struct {
+	Hosts []*HostResponse `json:"hosts"`
+}
+
+func (h *HostsResponse) String() string {
 	return fmt.Sprintf("%+v", *h)
 }
