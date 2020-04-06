@@ -5,7 +5,8 @@ import (
 )
 
 type Configuration struct {
-	Name string `json:"name"`
+	Name       string      `json:"name"`
+	Bootloader *Bootloader `json:"bootloader"`
 }
 
 func (c *Configuration) String() string {

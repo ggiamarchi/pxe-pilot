@@ -1,0 +1,5 @@
+DEFAULT grml
+
+label grml
+    kernel /grml/vmlinuz
+    append boot=live fetch=http://1.2.3.4/grml.squashfs initrd=/grml/initrd.img ssh=sheep console=ttyS1,57600n8
