@@ -62,6 +62,10 @@ func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {
 	return configurations
 }
 
+func ReadBootloaders(appConfig *model.AppConfig) []*model.Bootloader {
+	return appConfig.Configuration.Bootloaders
+}
+
 func RebootHost(host *model.Host) error {
 	switch status, err := ChassisPowerStatus(host.IPMI); status {
 	case "On":

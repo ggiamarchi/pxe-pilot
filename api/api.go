@@ -58,6 +58,8 @@ func api(appConfig *model.AppConfig) *gin.Engine {
 	showConfiguration(v1, appConfig)
 	deployConfiguration(v1, appConfig)
 
+	readBootloaders(v1, appConfig)
+
 	readHosts(v1, appConfig)
 	rebootHost(v1, appConfig)
 
