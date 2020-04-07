@@ -10,7 +10,8 @@ type AppConfig struct {
 		Root string
 	}
 	Configuration struct {
-		Directory string
+		Directory   string
+		Bootloaders []*Bootloader
 	}
 	Server struct {
 		Port int

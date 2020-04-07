@@ -48,14 +48,22 @@ func Refresh(appConfig *model.AppConfig) error {
 }
 
 func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {
-	files, _ := ioutil.ReadDir(appConfig.Configuration.Directory)
-	configurations := make([]*model.Configuration, len(files))
-	for i, f := range files {
-		configurations[i] = &model.Configuration{
-			Name: f.Name(),
+	configurations := make([]*model.Configuration, 0)
+	for _, bootloader := range appConfig.Configuration.Bootloaders {
+		files, _ := ioutil.ReadDir(appConfig.Configuration.Directory + "/" + bootloader.Name)
+		for _, f := range files {
+			configuration := &model.Configuration{
+				Name:       f.Name(),
+				Bootloader: bootloader,
+			}
+			configurations = append(configurations, configuration)
 		}
 	}
 	return configurations
+}
+
+func ReadBootloaders(appConfig *model.AppConfig) []*model.Bootloader {
+	return appConfig.Configuration.Bootloaders
 }
 
 func RebootHost(host *model.Host) error {
@@ -73,13 +81,6 @@ func RebootHost(host *model.Host) error {
 func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 
 	pxelinuxDir := appConfig.Tftp.Root + "/pxelinux.cfg"
-
-	files, _ := ioutil.ReadDir(pxelinuxDir)
-
-	filenames := make([]string, len(files))
-	for i, f := range files {
-		filenames[i] = f.Name()
-	}
 
 	hosts := make([]*model.Host, len(appConfig.Hosts))
 
@@ -122,8 +123,12 @@ func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 		if err != nil {
 			panic(err)
 		}
-		hosts[i].Configuration = &model.Configuration{
-			Name: configFile[strings.LastIndex(configFile, "/")+1:],
+
+		for _, c := range ReadConfigurations(appConfig) {
+			if c.Name == configFile[strings.LastIndex(configFile, "/")+1:] {
+				hosts[i].Configuration = c
+				break
+			}
 		}
 	}
 
@@ -186,14 +191,14 @@ func ReadConfigurationContent(appConfig *model.AppConfig, name string) (*model.C
 func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model.HostQuery) (*model.HostsResponse, error) {
 	logger.Info("Deploy configuration :: %s :: %+v", name, hosts)
 
-	configExists := false
+	var configToDeploy *model.Configuration
 	for _, c := range ReadConfigurations(appConfig) {
 		if name == c.Name {
-			configExists = true
+			configToDeploy = c
 			break
 		}
 	}
-	if !configExists {
+	if configToDeploy == nil {
 		return nil, newPXEError("NOT_FOUND", "Configuration '%s' does not exists", name)
 	}
 
@@ -279,7 +284,7 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 
 		// Create new config
 		pxeFilePath := fmt.Sprintf("%s/pxelinux.cfg/%s", appConfig.Tftp.Root, utils.PXEFilenameFromMAC(h.MACAddresses[0]))
-		srcConfigPath := fmt.Sprintf("%s/%s", appConfig.Configuration.Directory, name)
+		srcConfigPath := fmt.Sprintf("%s/%s/%s", appConfig.Configuration.Directory, configToDeploy.Bootloader.Name, configToDeploy.Name)
 
 		logger.Info("Creating symlink %s -> %s", srcConfigPath, pxeFilePath)
 		err := os.Symlink(srcConfigPath, pxeFilePath)

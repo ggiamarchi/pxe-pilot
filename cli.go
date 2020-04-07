@@ -31,6 +31,27 @@ func setupCLI() {
 		}
 	})
 
+	app.Command("bootloaders", "Bootloaders configuration commands", func(cmd *cli.Cmd) {
+		cmd.Command("list", "List available bootloaders", func(cmd *cli.Cmd) {
+			cmd.Action = func() {
+				logger.Init(!*debug)
+				var bootloaders = &[]*model.Bootloader{}
+				statusCode, err := http.Request("GET", *serverURL, "/v1/bootloaders", nil, bootloaders)
+				if err != nil || statusCode != 200 {
+					panic(err)
+				}
+
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeader([]string{"Name", "File", "Config path"})
+				for _, b := range *bootloaders {
+					table.Append([]string{b.Name, b.File, b.ConfigPath})
+				}
+				table.Render()
+			}
+		})
+	})
+
 	app.Command("config", "PXE configuration commands", func(cmd *cli.Cmd) {
 		cmd.Command("show", "Show PXE configurations", func(cmd *cli.Cmd) {
 
@@ -63,9 +84,9 @@ func setupCLI() {
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeader([]string{"Name"})
+				table.SetHeader([]string{"Name", "Bootloader name", "Bootloader file", "Bootloader config path"})
 				for _, c := range *configurations {
-					table.Append([]string{c.Name})
+					table.Append([]string{c.Name, c.Bootloader.Name, c.Bootloader.File, c.Bootloader.ConfigPath})
 				}
 				table.Render()
 			}

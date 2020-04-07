@@ -15,10 +15,18 @@ hosts:
     mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33", "00:00:00:00:01:33"]
 
 tftp:
-  root: "/Users/guillaume/Dev/pxe-pilot/test/tftp_root"
+  root: "/Users/guillaume/gopath/src/github.com/ggiamarchi/pxe-pilot/test/tftp_root"
 
 configuration:
-  directory: /Users/guillaume/Dev/pxe-pilot/test/tftp_root/pxelinux.cfg/conf
+  directory: /Users/guillaume/gopath/src/github.com/ggiamarchi/pxe-pilot/test/tftp_root/pxelinux.cfg/conf
+  bootloaders:
+    - name: pxelinux
+      file: pxelinux.0
+    - name: syslinux
+      file: syslinux.efi
+    - name: grub
+      file: grubnetx64.efi.signed
+      config_path: grub/grub.cfg
 
 server:
   port: 3478
