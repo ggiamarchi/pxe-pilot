@@ -162,18 +162,18 @@ func newPXEError(kind, msg string, a ...interface{}) *PXEError {
 func ReadConfigurationContent(appConfig *model.AppConfig, name string) (*model.ConfigurationDetails, error) {
 	logger.Info("Show configuration :: %s", name)
 
-	configExists := false
+	var configToShow *model.Configuration
 	for _, c := range ReadConfigurations(appConfig) {
 		if name == c.Name {
-			configExists = true
+			configToShow = c
 			break
 		}
 	}
-	if !configExists {
+	if configToShow == nil {
 		return nil, newPXEError("NOT_FOUND", "Configuration '%s' does not exists", name)
 	}
 
-	file := fmt.Sprintf("%s/%s", appConfig.Configuration.Directory, name)
+	file := fmt.Sprintf("%s/%s/%s", appConfig.Configuration.Directory, configToShow.Bootloader.Name, configToShow.Name)
 
 	f, err := ioutil.ReadFile(file)
 	if err != nil {
