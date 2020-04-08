@@ -134,7 +134,6 @@ func setupCLI() {
 
 				for _, h := range resp.Hosts {
 					table.Append([]string{h.Name, *config, h.Rebooted})
-					fmt.Println(5)
 				}
 
 				table.Render()
