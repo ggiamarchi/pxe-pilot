@@ -89,9 +89,9 @@ func setupCLI() {
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeader([]string{"Name", "Bootloader name", "Bootloader file", "Bootloader config path"})
+				table.SetHeader([]string{"Name", "Bootloader"})
 				for _, c := range *configurations {
-					table.Append([]string{c.Name, c.Bootloader.Name, c.Bootloader.File, c.Bootloader.ConfigPath})
+					table.Append([]string{c.Name, c.Bootloader.Name})
 				}
 				table.Render()
 			}
