@@ -66,6 +66,11 @@ func setupCLI() {
 
 				var configuration = &model.ConfigurationDetails{}
 				statusCode, err := http.Request("GET", *serverURL, fmt.Sprintf("/v1/configurations/%s", *name), nil, configuration)
+				if statusCode == 404 {
+					fmt.Println("Error : configuration does not exist")
+					os.Exit(1)
+				}
+
 				if err != nil || statusCode != 200 {
 					panic(err)
 				}
@@ -134,7 +139,6 @@ func setupCLI() {
 
 				for _, h := range resp.Hosts {
 					table.Append([]string{h.Name, *config, h.Rebooted})
-					fmt.Println(5)
 				}
 
 				table.Render()
