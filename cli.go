@@ -31,7 +31,7 @@ func setupCLI() {
 		}
 	})
 
-	app.Command("bootloaders", "Bootloaders configuration commands", func(cmd *cli.Cmd) {
+	app.Command("bootloader", "Bootloaders configuration commands", func(cmd *cli.Cmd) {
 		cmd.Command("list", "List available bootloaders", func(cmd *cli.Cmd) {
 			cmd.Action = func() {
 				logger.Init(!*debug)
