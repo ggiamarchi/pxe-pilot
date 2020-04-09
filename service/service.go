@@ -3,6 +3,7 @@ package service
 import (
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 
@@ -51,6 +52,12 @@ func ReadConfigurations(appConfig *model.AppConfig) []*model.Configuration {
 	configurations := make([]*model.Configuration, 0)
 	for _, bootloader := range appConfig.Configuration.Bootloaders {
 		files, _ := ioutil.ReadDir(appConfig.Configuration.Directory + "/" + bootloader.Name)
+
+		// Sort by age, keeping original order or equal elements.
+		sort.SliceStable(files, func(i, j int) bool {
+			return strings.Compare(files[i].Name(), files[j].Name()) < 1
+		})
+
 		for _, f := range files {
 			configuration := &model.Configuration{
 				Name:       f.Name(),
