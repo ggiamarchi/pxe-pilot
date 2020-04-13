@@ -3,10 +3,12 @@ package model
 import "fmt"
 
 type Host struct {
-	Name          string         `json:"name" yaml:"name"`
-	MACAddresses  []string       `json:"macAddresses" yaml:"mac_addresses"`
-	Configuration *Configuration `json:"configuration" yaml:"configuration"`
-	IPMI          *IPMI          `json:"ipmi" yaml:"ipmi"`
+	Name          string          `json:"name" yaml:"name"`
+	MACAddresses  []string        `json:"macAddresses" yaml:"mac_addresses"`
+	Configuration *Configuration  `json:"configuration" yaml:"configuration"`
+	PowerState    string          `json:"powerState" yaml:"power_state"`
+	IPMI          *IPMI           `json:"ipmi" yaml:"ipmi"`
+	Management    *HostManagement `json:"management" yaml:"management"`
 }
 
 func (h *Host) String() string {

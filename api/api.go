@@ -17,6 +17,8 @@ func Run(appConfigFile string) {
 	logger.Info("Starting PXE Pilot server...")
 	appConfig := loadAppConfig(appConfigFile)
 
+	logger.Debug("PXE Pilot Configuration loaded : %+v", appConfig)
+
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", appConfig.Server.Port),
 		Handler:      api(appConfig),

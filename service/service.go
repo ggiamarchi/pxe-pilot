@@ -18,12 +18,19 @@ func Refresh(appConfig *model.AppConfig) error {
 
 	hosts := ReadHosts(appConfig, false)
 
-	m := make(map[string]struct{})
+	m := make(map[string]bool)
 
 	for _, h := range hosts {
-		m[h.IPMI.Subnet] = struct{}{}
-		// Remove IPMI IP to ensure it is refreshed on next IPMI call
-		h.IPMI.Hostname = ""
+		if h.IPMI != nil {
+			m[h.IPMI.Subnet] = true
+			// Remove IPMI IP to ensure it is refreshed on next IPMI call
+			h.IPMI.Hostname = ""
+		}
+		if h.Management != nil {
+			m[h.Management.Subnet] = true
+			// Remove IPMI IP to ensure it is refreshed on next IPMI call
+			h.Management.IPAddress = ""
+		}
 	}
 	subnets := make([]string, 0, len(m))
 	for cidr := range m {
@@ -37,7 +44,7 @@ func Refresh(appConfig *model.AppConfig) error {
 		wg.Add(1)
 		go func(cidr string) {
 			defer wg.Done()
-			_, _, err := ExecCommand("fping -c 1 -D -q -g %s", cidr)
+			_, _, err := execCommand("fping -c 1 -D -q -g %s", cidr)
 			if err != nil {
 				logger.Error("%s", err)
 			}
@@ -73,12 +80,19 @@ func ReadBootloaders(appConfig *model.AppConfig) []*model.Bootloader {
 	return appConfig.Configuration.Bootloaders
 }
 
-func RebootHost(host *model.Host) error {
-	switch status, err := ChassisPowerStatus(host.IPMI); status {
+func RebootHost(appConfig *model.AppConfig, host *model.Host) error {
+	management, err := getHostManagementAdapter(appConfig, host)
+	if err != nil {
+		return err
+	}
+	if management == nil {
+		return logger.Errorf("Host %s has no host management interface", host.MACAddresses[0])
+	}
+	switch status, err := management.PowerStatus(host); status {
 	case "On":
-		return ChassisPowerReset(host.IPMI)
+		return management.PowerReset(host)
 	case "Off":
-		return ChassisPowerOn(host.IPMI)
+		return management.PowerOn(host)
 	case "Unknown":
 		return err
 	}
@@ -89,36 +103,31 @@ func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 
 	pxelinuxDir := appConfig.Tftp.Root + "/pxelinux.cfg"
 
-	hosts := make([]*model.Host, len(appConfig.Hosts))
-
 	var wg sync.WaitGroup
 
 	for i, host := range appConfig.Hosts {
 
 		if status {
-			if host.IPMI != nil {
+			management, _ := getHostManagementAdapter(appConfig, host)
+			logger.Info("Host management adapter for host %s :: %T", host.MACAddresses[0], management)
+
+			if management != nil {
 				wg.Add(1)
-				hostlocal := host
-				go func() {
+				go func(adapter HostManagementAdapter, hostlocal *model.Host) {
 					defer wg.Done()
-					_, err := ChassisPowerStatus(hostlocal.IPMI)
+					_, err := adapter.PowerStatus(hostlocal)
 					if err != nil {
 						// Retry once
-						_, err = ChassisPowerStatus(hostlocal.IPMI)
+						_, err = adapter.PowerStatus(hostlocal)
 						if err != nil {
-							logger.Error("Unable to find IPMI Status for %+v", hostlocal)
+							logger.Error("Unable to find power status for host %s", hostlocal.MACAddresses[0])
 						}
 					}
-				}()
+				}(management, host)
 			}
 		}
 
-		hosts[i] = &model.Host{
-			Name:         host.Name,
-			MACAddresses: host.MACAddresses,
-			IPMI:         host.IPMI,
-		}
-		pxeFile := utils.PXEFilenameFromMAC(hosts[i].MACAddresses[0])
+		pxeFile := utils.PXEFilenameFromMAC(appConfig.Hosts[i].MACAddresses[0])
 		pxeFilePath := fmt.Sprintf("%s/%s", pxelinuxDir, pxeFile)
 
 		if _, err := os.Stat(pxeFilePath); err != nil {
@@ -133,7 +142,7 @@ func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 
 		for _, c := range ReadConfigurations(appConfig) {
 			if c.Name == configFile[strings.LastIndex(configFile, "/")+1:] {
-				hosts[i].Configuration = c
+				appConfig.Hosts[i].Configuration = c
 				break
 			}
 		}
@@ -141,7 +150,7 @@ func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 
 	wg.Wait()
 
-	return hosts
+	return appConfig.Hosts
 }
 
 type PXEError struct {
@@ -319,7 +328,7 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 			Configuration: h.Configuration,
 		}
 		if h.Reboot {
-			err := RebootHost(hostsByName[h.Name])
+			err := RebootHost(appConfig, hostsByName[h.Name])
 			if err != nil {
 				hostResponse.Rebooted = "ERROR"
 			} else {
@@ -332,4 +341,34 @@ func DeployConfiguration(appConfig *model.AppConfig, name string, hosts []*model
 	}
 
 	return resp, nil
+}
+
+func getHostManagementAdapter(appConfig *model.AppConfig, host *model.Host) (HostManagementAdapter, error) {
+
+	if host.IPMI != nil && host.Management != nil {
+		return nil, logger.Errorf("Host '%s' has several host management adpter", host.Name)
+	}
+
+	var adapter HostManagementAdapter
+
+	if host.IPMI != nil {
+		adapter = IpmiBmcAdapter{}
+		return adapter, nil
+	}
+
+	if host.Management != nil {
+		for _, rma := range appConfig.HostManagementAdapters {
+			if rma.Name == host.Management.AdapterName {
+				host.Management.Adapter = rma
+				break
+			}
+		}
+		if host.Management.Adapter == nil {
+			return nil, logger.Errorf("No host management adapter found with name '%s'", host.Management.AdapterName)
+		}
+		adapter = GenericHostManagementAdapter{}
+		return adapter, nil
+	}
+
+	return nil, nil
 }

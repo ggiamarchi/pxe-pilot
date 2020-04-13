@@ -32,7 +32,7 @@ func rebootHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.PATCH("/hosts/:name/reboot", func(c *gin.Context) {
 		for _, host := range appConfig.Hosts {
 			if host.Name == c.Param("name") {
-				if service.RebootHost(host) != nil {
+				if service.RebootHost(appConfig, host) != nil {
 					c.Writer.WriteHeader(409)
 					return
 				}

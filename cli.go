@@ -164,20 +164,13 @@ func setupCLI() {
 
 				// Print data table
 				table := tablewriter.NewWriter(os.Stdout)
-				table.SetHeader([]string{"Name", "Configuration", "MAC", "IPMI MAC", "IPMI HOST", "Power State"})
+				table.SetHeader([]string{"Name", "Configuration", "MAC", "MGMT MAC", "MGMT IP", "Power State"})
 				table.SetAutoWrapText(false)
 
 				for _, h := range *hosts {
 					var configuration string
 					if h.Configuration != nil {
 						configuration = h.Configuration.Name
-					}
-
-					var ipmi *model.IPMI
-					if h.IPMI != nil {
-						ipmi = h.IPMI
-					} else {
-						ipmi = &model.IPMI{}
 					}
 
 					var macAddresses bytes.Buffer
@@ -189,7 +182,18 @@ func setupCLI() {
 						macAddresses.WriteString(h.MACAddresses[i])
 					}
 
-					table.Append([]string{h.Name, configuration, macAddresses.String(), ipmi.MACAddress, ipmi.Hostname, ipmi.Status})
+					rmMAC := ""
+					rmIP := ""
+					if h.IPMI != nil {
+						rmMAC = h.IPMI.MACAddress
+						rmIP = h.IPMI.Hostname
+					}
+					if h.Management != nil {
+						rmMAC = h.Management.MacAddress
+						rmIP = h.Management.IPAddress
+					}
+
+					table.Append([]string{h.Name, configuration, macAddresses.String(), rmMAC, rmIP, h.PowerState})
 				}
 				table.Render()
 			}

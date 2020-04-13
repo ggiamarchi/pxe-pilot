@@ -1,6 +1,39 @@
 ---
 
+host_management_adapters:
+
+  - name: openbmc-yosemite
+    vars:
+      - name: command
+        value: sshpass -p 0penBmc ssh root@{{.ip_address}} /usr/local/bin/power-util
+    power_status:
+      cmd: '{{.command}} {{.slot}} status'
+      pattern_on: ' : ON'
+      pattern_off: ' : OFF'
+    power_reset:
+      cmd: '{{.command}} {{.slot}} cycle'
+    power_on:
+      cmd: '{{.command}} {{.slot}} on'
+    power_off:
+      cmd: '{{.command}} {{.slot}} off'
+
+  - name: ipmitool
+    vars:
+      - name: command
+        value: ipmitool -N 2 -R 2 -I lanplus -U USERID -P PASSW0RD -H {{.ip_address}}
+    power_status:
+      cmd: '{{.command}} power status'
+      pattern_on: 'Chassis Power is on'
+      pattern_off: 'Chassis Power is off'
+    power_reset:
+      cmd: '{{.command}} power reset'
+    power_on:
+      cmd: '{{.command}} power on'
+    power_off:
+      cmd: '{{.command}} power off'
+
 hosts:
+
   - name: h1
     mac_addresses: ["00:00:00:00:00:01"]
     ipmi:
@@ -9,10 +42,26 @@ hosts:
       username: "user"
       password: "password"
       interface: "lanplus"
+
   - name: h2
     mac_addresses: ["00:00:00:00:00:02"]
+    management:
+      mac_address: "00:00:00:00:00:a2"
+      subnet: 10.0.0.0/24
+      adapter: openbmc-yosemite
+      vars:
+        - name: slot
+          value: slot1
+
   - name: h3
     mac_addresses: ["00:00:00:00:00:03", "00:00:00:00:00:33", "00:00:00:00:01:33"]
+
+  - name: h4
+    mac_addresses: ["00:00:00:00:00:04"]
+    management:
+      mac_address: "00:00:00:00:00:a4"
+      subnet: 10.0.0.0/24
+      adapter: ipmitool
 
 tftp:
   root: "/Users/guillaume/gopath/src/github.com/ggiamarchi/pxe-pilot/test/tftp_root"
