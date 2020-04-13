@@ -202,7 +202,7 @@ func setupCLI() {
 			cmd.Spec = "HOSTNAME"
 
 			var (
-				hostname = cmd.StringArg("HOSTNAME", "", "Host to reboot or reboot if powered off")
+				hostname = cmd.StringArg("HOSTNAME", "", "Host to reboot or boot if powered off")
 			)
 
 			cmd.Action = func() {
@@ -215,6 +215,62 @@ func setupCLI() {
 				table := tablewriter.NewWriter(os.Stdout)
 				table.SetAutoWrapText(false)
 				table.SetHeader([]string{"Name", "Reboot"})
+
+				if err != nil || statusCode != 204 {
+					table.Append([]string{*hostname, "ERROR"})
+					table.Render()
+					cli.Exit(1)
+				} else {
+					table.Append([]string{*hostname, "OK"})
+					table.Render()
+				}
+			}
+		})
+		cmd.Command("on", "Power on a host", func(cmd *cli.Cmd) {
+			cmd.Spec = "HOSTNAME"
+
+			var (
+				hostname = cmd.StringArg("HOSTNAME", "", "Host to boot")
+			)
+
+			cmd.Action = func() {
+
+				logger.Init(!*debug)
+
+				statusCode, err := http.Request("PATCH", *serverURL, "/v1/hosts/"+*hostname+"/on", nil, nil)
+
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetAutoWrapText(false)
+				table.SetHeader([]string{"Name", "On"})
+
+				if err != nil || statusCode != 204 {
+					table.Append([]string{*hostname, "ERROR"})
+					table.Render()
+					cli.Exit(1)
+				} else {
+					table.Append([]string{*hostname, "OK"})
+					table.Render()
+				}
+			}
+		})
+		cmd.Command("off", "Power off a host", func(cmd *cli.Cmd) {
+			cmd.Spec = "HOSTNAME"
+
+			var (
+				hostname = cmd.StringArg("HOSTNAME", "", "Host to stop")
+			)
+
+			cmd.Action = func() {
+
+				logger.Init(!*debug)
+
+				statusCode, err := http.Request("PATCH", *serverURL, "/v1/hosts/"+*hostname+"/off", nil, nil)
+
+				// Print data table
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetAutoWrapText(false)
+				table.SetHeader([]string{"Name", "Off"})
 
 				if err != nil || statusCode != 204 {
 					table.Append([]string{*hostname, "ERROR"})

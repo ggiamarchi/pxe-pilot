@@ -64,6 +64,8 @@ func api(appConfig *model.AppConfig) *gin.Engine {
 
 	readHosts(v1, appConfig)
 	rebootHost(v1, appConfig)
+	onHost(v1, appConfig)
+	offHost(v1, appConfig)
 
 	refresh(v1, appConfig)
 

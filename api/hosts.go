@@ -44,6 +44,38 @@ func rebootHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	})
 }
 
+func onHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
+	api.PATCH("/hosts/:name/on", func(c *gin.Context) {
+		for _, host := range appConfig.Hosts {
+			if host.Name == c.Param("name") {
+				if service.OnHost(appConfig, host) != nil {
+					c.Writer.WriteHeader(409)
+					return
+				}
+				c.Writer.WriteHeader(204)
+				return
+			}
+		}
+		c.Writer.WriteHeader(404)
+	})
+}
+
+func offHost(api *gin.RouterGroup, appConfig *model.AppConfig) {
+	api.PATCH("/hosts/:name/off", func(c *gin.Context) {
+		for _, host := range appConfig.Hosts {
+			if host.Name == c.Param("name") {
+				if service.OffHost(appConfig, host) != nil {
+					c.Writer.WriteHeader(409)
+					return
+				}
+				c.Writer.WriteHeader(204)
+				return
+			}
+		}
+		c.Writer.WriteHeader(404)
+	})
+}
+
 func refresh(api *gin.RouterGroup, appConfig *model.AppConfig) {
 	api.PATCH("/refresh", func(c *gin.Context) {
 

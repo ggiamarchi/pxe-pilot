@@ -80,6 +80,28 @@ func ReadBootloaders(appConfig *model.AppConfig) []*model.Bootloader {
 	return appConfig.Configuration.Bootloaders
 }
 
+func OnHost(appConfig *model.AppConfig, host *model.Host) error {
+	management, err := getHostManagementAdapter(appConfig, host)
+	if err != nil {
+		return err
+	}
+	if management == nil {
+		return logger.Errorf("Host %s has no host management interface", host.MACAddresses[0])
+	}
+	return management.PowerOn(host)
+}
+
+func OffHost(appConfig *model.AppConfig, host *model.Host) error {
+	management, err := getHostManagementAdapter(appConfig, host)
+	if err != nil {
+		return err
+	}
+	if management == nil {
+		return logger.Errorf("Host %s has no host management interface", host.MACAddresses[0])
+	}
+	return management.PowerOff(host)
+}
+
 func RebootHost(appConfig *model.AppConfig, host *model.Host) error {
 	management, err := getHostManagementAdapter(appConfig, host)
 	if err != nil {
