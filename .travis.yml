@@ -1,16 +1,28 @@
 language: go
 
-sudo: false
-
 go: 1.14
 
-install:
+before_install:
   - make dep-dev
 
+install:
+  - GOOS=linux GOARCH=amd64 make --debug EXECUTABLE=pxe-pilot-linux-amd64
+
+before_script:
+  - test/scripts/install-tools.sh
+  - test/scripts/install-bats.sh
+  - test/scripts/install-mocks.sh
+  - test/scripts/install-service.sh
+
 script:
-  - GOOS=linux  GOARCH=amd64 make --debug EXECUTABLE=pxe-pilot-linux-amd64
+  - test/run.bats
+
+after_success:
   - GOOS=linux  GOARCH=arm   make --debug EXECUTABLE=pxe-pilot-linux-arm
   - GOOS=darwin GOARCH=amd64 make --debug EXECUTABLE=pxe-pilot-darwin-amd64
+
+after_failure:
+  - cat test/test.log
 
 deploy:
   provider: releases
