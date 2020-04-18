@@ -1,0 +1,89 @@
+---
+
+host_management_adapters:
+
+  - name: ipmitool
+    vars:
+      - name: command
+        value: ipmitool-mock -N 2 -R 2 -I lanplus -U user -P password -H {{.ip_address}}
+    power_status:
+      cmd: '{{.command}} power status'
+      pattern_on: 'Chassis Power is on'
+      pattern_off: 'Chassis Power is off'
+    power_reset:
+      cmd: '{{.command}} power reset'
+    power_on:
+      cmd: '{{.command}} power on'
+    power_off:
+      cmd: '{{.command}} power off'
+
+  - name: ipmitool-with-variables
+    vars:
+      - name: command
+        value: ipmitool-mock -N 2 -R 2 -I lanplus -U {{.username}} -P {{.password}} -H {{.ip_address}}
+    power_status:
+      cmd: '{{.command}} power status'
+      pattern_on: 'Chassis Power is on'
+      pattern_off: 'Chassis Power is off'
+    power_reset:
+      cmd: '{{.command}} power reset'
+    power_on:
+      cmd: '{{.command}} power on'
+    power_off:
+      cmd: '{{.command}} power off'
+
+hosts:
+
+  - name: h1
+    mac_addresses: ["00:00:00:00:0b:01"]
+    ipmi:
+      mac_address: "00:00:00:00:0a:01"
+      subnet: 10.69.70.0/24
+      username: "user"
+      password: "password"
+      interface: "lanplus"
+
+  - name: h2
+    mac_addresses: ["00:00:00:00:0b:02"]
+    management:
+      mac_address: "00:00:00:00:0a:02"
+      subnet: 10.69.70.0/24
+      adapter: ipmitool-with-variables
+      vars:
+        - name: username
+          value: user
+        - name: password
+          value: password
+
+  - name: h3
+    mac_addresses: ["00:00:00:00:0b:03", "00:00:00:00:0c:03", "00:00:00:00:0d:03"]
+
+  - name: h4
+    mac_addresses: ["00:00:00:00:0b:04"]
+    management:
+      mac_address: "00:00:00:00:0a:04"
+      subnet: 10.69.70.0/24
+      adapter: ipmitool
+
+tftp:
+  root: "%%TFTP_ROOT%%"
+
+configuration:
+  directory: "%%CONFIG_DIR%%"
+  bootloaders:
+    - name: pxelinux
+      file: pxelinux.0
+    - name: syslinux
+      file: syslinux.efi
+    - name: grub
+      file: grubnetx64.efi.signed
+      config_path: grub/grub.cfg
+
+discovery:
+  cmd: fping -c 1 -D -q -g {{.subnet}}
+
+arp:
+  cmd: arp -an
+
+server:
+  port: 3478

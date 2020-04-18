@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ ! -e /tmp/arp-populated ]; then
+	exit 0
+fi
+
+echo "? (10.69.70.14) at 00:00:00:00:0a:04 [ether] on enp0s8
+? (10.69.70.12) at 00:00:00:00:0a:02 [ether] on enp0s8
+? (10.69.70.13) at 00:00:00:00:0a:03 [ether] on enp0s8
+? (10.69.70.11) at 00:00:00:00:0a:01 [ether] on enp0s8"

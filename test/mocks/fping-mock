@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sleep 5
+
+touch /tmp/arp-populated
