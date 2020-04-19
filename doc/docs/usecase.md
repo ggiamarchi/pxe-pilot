@@ -1,5 +1,3 @@
-# PXE Pilot use case
-
 Here comes a real life example where PXE Pilot can help. This is actually the use case
 that leads to the creation of PXE Pilot.
 
@@ -94,7 +92,7 @@ one, we are done.
 
 ## Finally
 
-__Here comes PXE Pilot :)__
+Here comes PXE Pilot !
 
 From the script `ubuntu-16.04.sh`, we just need to send a `PUT` request
 

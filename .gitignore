@@ -19,3 +19,8 @@ bin/
 #
 .vagrant/
 *.log
+
+#
+# Generated documentation
+#
+doc/site

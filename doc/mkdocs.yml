@@ -1,0 +1,12 @@
+site_name: PXE Pilot
+site_author: Guillaume Giamarchi
+theme: readthedocs
+
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Use case: usecase.md
+  - API Documentation: api.md
+
+markdown_extensions:
+  - admonition
