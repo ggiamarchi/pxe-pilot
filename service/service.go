@@ -154,6 +154,7 @@ func ReadHosts(appConfig *model.AppConfig, status bool) []*model.Host {
 
 		if _, err := os.Stat(pxeFilePath); err != nil {
 			// No PXE config deployed for this host
+			appConfig.Hosts[i].Configuration = nil
 			continue
 		}
 

@@ -1,0 +1,114 @@
+#!/bin/bash
+
+set -e
+
+data=$(cat /etc/pxe-pilot/test-home)/mocks/data
+
+mkdir -p ${data}
+
+POSITIONAL=()
+while [ $# -gt 0 ]; do
+	case $1 in
+	-I)
+		:
+		shift
+		shift
+		;;
+	-P)
+		:
+		password=$2
+		shift
+		shift
+		;;
+	-U)
+		:
+		username=$2
+		shift
+		shift
+		;;
+	-N)
+		:
+		shift
+		shift
+		;;
+	-R)
+		:
+		shift
+		shift
+		;;
+	-H)
+		host="$2"
+		shift
+		shift
+		;;
+	*)
+		POSITIONAL+=("$1")
+		shift
+		:
+		;;
+	esac
+done
+
+if [ ! -d ${data}/${host} ]; then
+	sleep 5
+	echo "Error: Unable to establish IPMI v2 / RMCP+ session"
+	exit 1
+fi
+
+if [ "${username}" != "user" ] || [ "${password}" != "password" ]; then
+	echo "Error: Unable to establish IPMI v2 / RMCP+ session"
+	exit 1
+fi
+
+ipmi_cmd="${POSITIONAL[@]}"
+
+power_status() {
+	local statusFile="${data}/${host}/status"
+
+	if [ ! -e ${statusFile} ]; then
+		echo "off" > ${statusFile}
+	fi
+
+	sleep .2
+	echo "Chassis Power is $(cat ${statusFile})"
+
+	exit 0
+}
+
+power_on() {
+	sleep .2
+	local statusFile="${data}/${host}/status"
+	echo "on" > ${statusFile}
+	echo 'Chassis Power Control: Up/On'
+}
+
+power_off() {
+	sleep .2
+	local statusFile="${data}/${host}/status"
+	echo "off" > ${statusFile}
+	echo 'Chassis Power Control: Down/Off'
+}
+
+power_reset() {
+	sleep .2
+	local statusFile="${data}/${host}/status"
+	echo 'Chassis Power Control: Reset'
+}
+
+[[ "${ipmi_cmd}" = "power status" || "${ipmi_cmd}" = "chassis power status" ]] && {
+	power_status
+}
+
+[[ "${ipmi_cmd}" = "power on" || "${ipmi_cmd}" = "chassis power on" ]] && {
+	power_on
+}
+
+[[ "${ipmi_cmd}" = "power off" || "${ipmi_cmd}" = "chassis power off" ]] && {
+	power_off
+}
+
+[[ "${ipmi_cmd}" = "power reset" || "${ipmi_cmd}" = "chassis power reset" ]] && {
+	power_reset
+}
+
+exit 0

@@ -13,3 +13,9 @@ test/tftp_root/pxelinux.cfg/01-*
 # Binary tools localy installed
 #
 bin/
+
+#
+# Vagrant things
+#
+.vagrant/
+*.log
