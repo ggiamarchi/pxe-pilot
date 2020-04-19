@@ -16,6 +16,7 @@ type AppConfig struct {
 	Server struct {
 		Port int
 	}
+	HostManagementAdapters []*HostManagementInfo `yaml:"host_management_adapters"`
 }
 
 func (c *AppConfig) String() string {

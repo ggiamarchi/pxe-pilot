@@ -7,7 +7,6 @@ type IPMI struct {
 	Username   string `json:"username" yaml:"username"`
 	Password   string `json:"password" yaml:"password"`
 	Interface  string `json:"interface" yaml:"interface"`
-	Status     string `json:"status" yaml:"status"`
 	Hostname   string `json:"hostname" yaml:"hostname"`
 	Subnet     string `json:"subnet" yaml:"subnet"`
 }
