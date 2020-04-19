@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usecase - PXE Pilot</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Usecase";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> PXE Pilot</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../api/">Api</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../quickstart/">Quickstart</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Usecase</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#initial-situation">Initial situation</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#problem-we-wish-to-solve">Problem we wish to solve</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#looking-for-a-solution">Looking for a solution</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#finally">Finally</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">PXE Pilot</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Usecase</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>Here comes a real life example where PXE Pilot can help. This is actually the use case
+that leads to the creation of PXE Pilot.</p>
+<h2 id="initial-situation">Initial situation</h2>
+<p>On a sub-network we have a PXE server to boot hosts over the network. It is composed of</p>
+<ul>
+<li>A DHCP server</li>
+<li>A TFTP server</li>
+<li>A HTTP (to serve additionnal files after PXE boot)</li>
+</ul>
+<p>We have 3 differents boot configurations:</p>
+<ul>
+<li><strong>Ubuntu 16.06 Installer</strong> - This runs the Ubuntu installer in an automated way using a preseed configuration file. When the installation is done the host reboots</li>
+<li><strong>GRML 2017.05 Live</strong> - This runs a live distribution with an in-memory filesystem. This boot configuration is useful to run a server in a rescue mode to debug potential issues</li>
+<li><strong>Local</strong> - A PXE configuration that leads the host to boot on the local drive. This is useful when we want to force a host to boot on the local drive even if the network device has  a higher priority in the BIOS boot sequence</li>
+</ul>
+<p>Here is the content of the TFTP root directory:</p>
+<pre><code>|-- pxelinux.cfg
+|   |-- conf
+|   |   |-- ubuntu-16.04
+|   |   |-- grml-2017.05
+|   |   `-- local
+|-- pxelinux.0
+|-- ldlinux.c32
+|-- grml
+|   `-- 2017.05
+|       |-- initrd.img
+|       `-- vmlinuz
+`-- ubuntu
+    `-- 1604
+        |-- initrd.gz
+        `-- linux
+</code></pre>
+
+<p>And here the contemt of the HTTP root directory:</p>
+<pre><code>.
+|-- grml64-full_2017.05.iso    # Filesystem for the GRML disribution
+|-- ubuntu-16.04.seed          # Preseed configuration for Ubuntu installer
+`-- ubuntu-16.04.sh            # Script executed at the very end of the preseed
+</code></pre>
+
+<p>At this point, if we wish a specific host to boot with a specific configuration, we need
+to create a configuration file named after the host's MAC address.</p>
+<p>Let's say we wish the MAC address <code>23:34:a3:e9:09:cc</code> to boot with <code>grml-2017.05</code>
+configuration. We can basically do</p>
+<pre><code>$ ln -s pxelinux.cfg/conf/grml-2017.05 pxelinux.cfg/01-23-34-a3-e9-09-cc
+</code></pre>
+
+<h2 id="problem-we-wish-to-solve">Problem we wish to solve</h2>
+<p>First, let's consider the case where we wish to install Ubuntu 16.04 for a specific host.</p>
+<p><strong>To achieve that, what can we do ?</strong></p>
+<ol>
+<li>Deploy <code>ubuntu-16.04</code> configuration for this host</li>
+<li>Start (or restart) the host</li>
+</ol>
+<p><strong>Then what's happen ?</strong></p>
+<ol>
+<li>The server PXE boot the Ubuntu installer</li>
+<li>The installer loads the <code>ubuntu-16.04.seed</code> file containing preseed instructions</li>
+<li>The installation, at the end, loads and executes the script <code>ubuntu-16.04.sh</code></li>
+<li>The server reboots</li>
+<li>The server PXE boot the Ubuntu installer</li>
+<li>...</li>
+</ol>
+<p><strong>Do you see the issue ?</strong></p>
+<p>As long as the <code>ubuntu-16.04</code> configuration is present for this host, the host boots on
+the installer and then reboot in an infinite loop.</p>
+<h2 id="looking-for-a-solution">Looking for a solution</h2>
+<p>Once the operating system installation is complete, we would like to replace the host's PXE
+configuration by the <code>local</code> configuration.</p>
+<p>This way, after the installation completes, the server reboots on the freshly installed O/S.</p>
+<p>If we are able to do that from the script <code>ubuntu-16.04.sh</code>, it's victory. That said, how
+to change the configuration on the PXE server remotely ?</p>
+<p>If there is an API exposing an opreration to switch from a PXE configuration to another
+one, we are done.</p>
+<h2 id="finally">Finally</h2>
+<p>Here comes PXE Pilot !</p>
+<p>From the script <code>ubuntu-16.04.sh</code>, we just need to send a <code>PUT</code> request</p>
+<pre><code>curl -i -X PUT http://pxe-server:3478/configurations/local/deploy -d '
+{
+    &quot;hosts&quot;: [
+        {
+            &quot;macAddress&quot;: &quot;23:34:a3:e9:09:cc&quot;
+        }
+    ]
+}'
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../quickstart/" class="btn btn-neutral" title="Quickstart"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../quickstart/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Api - PXE Pilot</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Api";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> PXE Pilot</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Api</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#api-documentation">API Documentation</a></li>
+                
+                    <li><a class="toctree-l4" href="#read-configurations">Read configurations</a></li>
+                
+                    <li><a class="toctree-l4" href="#show-configurations">Show configurations</a></li>
+                
+                    <li><a class="toctree-l4" href="#read-hosts">Read hosts</a></li>
+                
+                    <li><a class="toctree-l4" href="#reboot-a-host">Reboot a host</a></li>
+                
+                    <li><a class="toctree-l4" href="#deploy-a-configuration-for-hosts">Deploy a configuration for host(s)</a></li>
+                
+                    <li><a class="toctree-l4" href="#refresh-hosts-information">Refresh hosts information</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../quickstart/">Quickstart</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../usecase/">Usecase</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">PXE Pilot</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Api</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="api-documentation">API Documentation</h1>
+<h2 id="read-configurations">Read configurations</h2>
+<pre><code>GET /v1/configurations
+</code></pre>
+
+<h6 id="response">Response</h6>
+<pre><code class="json">{
+    &quot;configurations&quot;: [
+        {
+            &quot;name&quot;: &quot;ubuntu-16.04&quot;
+        },
+        {
+            &quot;name&quot;: &quot;local&quot;
+        },
+        {
+            &quot;name&quot;: &quot;grml-2017.05&quot;
+        }
+    ]
+}
+</code></pre>
+
+<h6 id="response-codes">Response codes</h6>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>20O</code></td>
+<td><code>Ok</code></td>
+<td>Server configurations have been retrieved</td>
+</tr>
+</tbody>
+</table>
+<h2 id="show-configurations">Show configurations</h2>
+<pre><code>GET /v1/configurations/&lt;name&gt;
+</code></pre>
+
+<h6 id="response_1">Response</h6>
+<pre><code class="json">{
+  &quot;name&quot;: &quot;local&quot;,
+  &quot;content&quot;: &quot;default local\n\nlabel local\n    localboot 0\n&quot;
+}
+</code></pre>
+
+<h6 id="response-codes_1">Response codes</h6>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>20O</code></td>
+<td><code>Ok</code></td>
+<td>Configuration detail have been retrieved</td>
+</tr>
+</tbody>
+</table>
+<h2 id="read-hosts">Read hosts</h2>
+<pre><code>GET /v1/hosts
+</code></pre>
+
+<h6 id="response_2">Response</h6>
+<pre><code class="json">[
+    {
+        &quot;name&quot;: &quot;h1&quot;,
+        &quot;macAddresses&quot;: [
+            &quot;00:00:00:00:00:01&quot;
+        ],
+        &quot;configuration&quot;: null
+    },
+    {
+        &quot;name&quot;: &quot;h2&quot;,
+        &quot;macAddresses&quot;: [
+            &quot;00:00:00:00:00:02&quot;
+        ],
+        &quot;configuration&quot;: {
+            &quot;name&quot;: &quot;ubuntu-16.04&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;h3&quot;,
+        &quot;macAddresses&quot;: [
+            &quot;00:00:00:00:00:03&quot;,
+            &quot;00:00:00:00:00:33&quot;
+        ],
+        &quot;configuration&quot;: {
+            &quot;name&quot;: &quot;local&quot;
+        }
+    }
+]
+</code></pre>
+
+<h6 id="response-codes_2">Response codes</h6>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>20O</code></td>
+<td><code>Ok</code></td>
+<td>Host list had been retrieved</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reboot-a-host">Reboot a host</h2>
+<pre><code>PATCH /v1/hosts/&lt;name&gt;/reboot
+</code></pre>
+
+<h6 id="response-codes_3">Response codes</h6>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>204</code></td>
+<td><code>No Content</code></td>
+<td>Host had been successfully rebooted</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Not Found</code></td>
+<td>Host does not exist</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td><code>Conflict</code></td>
+<td>Reboot did not succeed for any reason</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deploy-a-configuration-for-hosts">Deploy a configuration for host(s)</h2>
+<pre><code>PUT /v1/configurations/&lt;configuration_name&gt;/deploy
+</code></pre>
+
+<h6 id="body">Body</h6>
+<pre><code class="json">{
+    &quot;hosts&quot;: [
+        {
+            &quot;name&quot;: &quot;h1&quot;
+        },
+        {
+            &quot;name&quot;: &quot;h2&quot;
+        },
+        {
+            &quot;mac_address&quot;: &quot;83:06:0a:00:cf:03&quot;
+        }
+    ]
+}
+</code></pre>
+
+<h6 id="error-response-code-4xx">Error response (code 4xx)</h6>
+<pre><code class="json">{
+    &quot;message&quot;: &quot;Configuration not found&quot;
+}
+</code></pre>
+
+<h6 id="parameters">Parameters</h6>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>In</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hosts</code></td>
+<td>body</td>
+<td>Host[]</td>
+<td>Yes</td>
+<td>Hosts for whom to deploy configuration</td>
+</tr>
+</tbody>
+</table>
+<h6 id="host-object">Host (object)</h6>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>No</td>
+<td>Host name</td>
+</tr>
+<tr>
+<td><code>mac_address</code></td>
+<td>string</td>
+<td>No</td>
+<td>Host MAC address</td>
+</tr>
+<tr>
+<td><code>reboot</code></td>
+<td>bool</td>
+<td>No</td>
+<td>Whether the host should be rebooted automatically or not</td>
+</tr>
+</tbody>
+</table>
+<h6 id="response-codes_4">Response codes</h6>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>204</code></td>
+<td><code>No Content</code></td>
+<td>Configurations had been deployed</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>Not found</code></td>
+<td>Either the configuation or a host is not found</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>Bad request</code></td>
+<td>Malformed body</td>
+</tr>
+</tbody>
+</table>
+<h2 id="refresh-hosts-information">Refresh hosts information</h2>
+<p>This API populate the ARP table for all subnets in the PXE Pilot configuration</p>
+<pre><code>PATCH /v1/refresh
+</code></pre>
+
+<h6 id="response-codes_5">Response codes</h6>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>204</code></td>
+<td><code>No Content</code></td>
+<td>Refresh operation completed without any issue</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../quickstart/" class="btn btn-neutral float-right" title="Quickstart"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../quickstart/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
